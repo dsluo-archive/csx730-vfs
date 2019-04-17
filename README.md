@@ -16,6 +16,10 @@ defined in their own header file:
 | `csx730_medta.h`  | [Meta-Data API](#meta-data-api)                                           |
 | `csx730_vfs.h`    | [VFS User Space API](#vfs-user-space-api)                                 |
 
+<hr/>
+
+## API Descriptions
+
 ### I/O Control & Basic File System API
 
 ### File Organization API
@@ -23,4 +27,6 @@ defined in their own header file:
 ### Meta-Data API
 
 ### VFS User Space API
+
+<hr/<>
 
