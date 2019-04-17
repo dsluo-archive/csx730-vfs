@@ -26,9 +26,9 @@ You can think of the VFS as a stacked architecture involving the first four APIs
 ### I/O Control & Basic File System API
 
 This API provides block I/O disk emulation. Users of the is API can open disk images and
-get / read and put / write blocks on the opened disks. Readers whould consult 
-`csx730_ioctl.h` for complete documentation. Here is a summary of the functions provided 
-by the API:
+get / read and put / write blocks on the opened disks. **An implementation is provided for you
+in `csx730_ioctl.so`.** Readers whould consult `csx730_ioctl.h` for complete documentation. 
+Here is a summary of the functions provided by the API:
 
 | Function            | Short Description      |
 |---------------------|------------------------|
@@ -49,8 +49,7 @@ typedef struct {
 ```
 
 The `disk_t` objects for opened disks contain `stat_t` objects for bock-level I/O statistics
-gathered using the [Statistics API](#statistics-api). **An implementation is provided for you
-in `csx730_ioctl.so`.**
+gathered using the [Statistics API](#statistics-api). 
 
 ### File Organization API
 
