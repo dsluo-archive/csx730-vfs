@@ -4,7 +4,10 @@
 
 The `csx730-vfs` project provides a virtual file system (VFS) to user programs that
 is similar to the [Unix File System](https://en.wikipedia.org/wiki/Unix_File_System)
-in terms of both interface and general layout. 
+in terms of both interface and general layout. User programs can create, edit, and
+modify regular files and directories within the file system via a convenient
+User Space API. The stacked architecture for the VFS involves multiple APIs, each 
+defined in their own header file:
 
 | Header            | Role                                |
 |-------------------|-------------------------------------|
