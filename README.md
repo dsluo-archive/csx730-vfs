@@ -9,13 +9,13 @@ modify regular files and directories within the file system via a convenient
 User Space API. The architecture for the VFS involves multiple APIs, each 
 defined in their own header file:
 
-| Header            | Role                                                                      |
-|-------------------|---------------------------------------------------------------------------|
-| `csx730_ioctl.h`  | [I/O Control & Basic File System API](#io-control--basic-file-system-api) |
-| `csx730_data.h`   | [File Organization API](#file-organization-api)                           |
-| `csx730_medta.h`  | [Meta-Data API](#meta-data-api)                                           |
-| `csx730_vfs.h`    | [VFS User Space API](#vfs-user-space-api)                                 |
-| `csx730_stat.h`   | [Statistics API](#statistics-api)                                         |
+| Header            | Implementation    | Role                                                                      |
+|-------------------|-------------------|---------------------------------------------------------------------------|
+| `csx730_ioctl.h`  | `csx730_ioctl.so` | [I/O Control & Basic File System API](#io-control--basic-file-system-api) |
+| `csx730_data.h`   | | [File Organization API](#file-organization-api)                           |
+| `csx730_medta.h`  | | [Meta-Data API](#meta-data-api)                                           |
+| `csx730_vfs.h`    | | [VFS User Space API](#vfs-user-space-api)                                 |
+| `csx730_stat.h`   | `csx730_stat.so`  | [Statistics API](#statistics-api)                                         |
 
 You can think of the VFS as a stacked architecture involving the first four APIs in the table.
 
