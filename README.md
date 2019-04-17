@@ -25,17 +25,31 @@ You can think of the VFS as a stacked architecture involving the first four APIs
 
 ### I/O Control & Basic File System API
 
-| Function           | Short Description
-|--------------------|-----------------------
-| `csx730_disk_open` |
-| `csx730_disk_get`  |
-| `csx730_disk_put`  |
+| Function            | Short Description
+|---------------------|-----------------------
+| `csx730_ioctl_open` |
+| `csx730_ioctl_get`  |
+| `csx730_ioctl_put`  |
 
 ### File Organization API
+
+
 
 ### Meta-Data API
 
 ### VFS User Space API
+
+| Function           | Short Description
+|--------------------|------------------------------------|
+| `csx730_creat`     | Create a file or directory.        |
+| `csx730_open`      | Open a file or directory.          |
+| `csx730_unlink`    | Remove a file or directory.        |
+| `csx730_stat`      | Get inode information.             |
+| `csx730_close`     | Close a file or directory.         |
+| `csx730_seek`      | Reposition read/write file offset. |
+| `csx730_read`      | Read from a file.                  |
+| `csx730_readdir`   | Read from a directory.             |
+| `csx730_write`     | Write to a file.                   |
 
 ### Statistics API
 
