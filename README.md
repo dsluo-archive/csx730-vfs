@@ -413,13 +413,22 @@ inode_t inode;
 csx730_stat(fd, &inode);
 
 if (inode.dir) {
+
   printf("%s is a directory!\n", inode.name);
+  inode_t child;
+
+  if (csx730_stat_child(fd, &child)) {
+    printf("first entry in dir is %s\n", child.name);
+  } else {
+    printf("dirctory is empty!\n");
+  } // if
 
 } else {
+
   printf("%s is a regular file!\n", inode.name);
+
 } // if
 ```
-
 
 <br/>
 
