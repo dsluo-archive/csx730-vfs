@@ -51,11 +51,24 @@ typedef struct {
 The `disk_t` objects for opened disks contain `stat_t` objects for bock-level I/O statistics
 gathered using the [Statistics API](#statistics-api). 
 
-### File Organization API
-
-
-
 ### Meta-Data API
+
+This API provides the inode structure. The `inode_t` structure is defined as follows:
+
+```c
+typedef struct inode {
+  char           name [255]; /**< Name of the file. */
+  unsigned long  ino;        /**< Inode number. */
+  bool           dir;        /**< Whether or not the file is a directory. */
+  size_t         size;       /**< Size of the file. */
+  size_t         bno;        /**< Starting block number for file data. */
+  size_t         offset;     /**< Offset of file data in starting block. */
+  time_t         atime;      /**< Time of last file access. */
+  struct inode * prev;       /**< Previous inode. */
+  struct inode * next;       /**< Next inode. */
+  sem_t          sem;        /**< Semaphore. */
+} inode_t;
+```
 
 ### VFS User Space API
 
