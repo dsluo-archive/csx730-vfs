@@ -187,7 +187,112 @@ contain `stat_t` objects for bock-level I/O statistics gathered using the
 
 <hr/>
 
-## Example User Programs
+## How to Get the Skeleton Code
+
+On Nike, execute the following terminal command in order to download the project
+files into sub-directory within your present working directory:
+
+```
+$ git clone https://github.com/cs1730/csx730-vfs.git
+```
+
+This should create a directory called `csx730-vfs` in your present working directory that contains
+the project files. For this project, the only files that are included with the project download
+are listed near the top of the page [here](https://github.com/cs1730/csx730-vfs).
+
+If any updates to the project files are announced by your instructor, you can
+merge those changes into your copy by changing into your project directory
+on Nike and issuing the following terminal command:
+
+```
+$ git pull
+```
+
+If you have any problems with any of these procedures, then please contact
+your instructor via Piazza.
+
+## Project Requirements
+
+This assignment is worth 100 points.
+
+### Functional Requirements
+
+A functional requirement is *added* to your point total if satisfied.
+There will be no partial credit for any of the requirements that simply
+require the presence of a function related a particular functionality.
+The actual functionality is tested using test cases.
+
+1. TODO
+
+### Non-Functional Requirements
+
+A non-functional requirement is *subtracted* from your point total if not satisfied. In order to
+emphasize the importance of these requirements, non-compliance results in the full point amount
+being subtracted from your point total. That is, they are all or nothing.
+
+1. __(100 points) Build Compliance:__ Your project must compile on Nike
+   using the provided `Makefile` and `gcc` (GCC) 8.2.0. Your code must compile,
+   assemble, and link with no errors or warnings. The required compiler
+   flags for this project are already included in the provided `Makefile`.
+
+   The grader will compile and test your code using `all` and `test` targets in
+   the provided `Makefile`. The `test` target will not work until the test driver
+   is provided during grading. If your code compiles, assembles, and links
+   with no errors or warnings using the `all` target, then it will very likely
+   do the same with the `test` target.
+
+1. __(100 points) Libraries:__ You are allowed to use any of the C standard library
+   functions. A reference is provided [here](https://en.cppreference.com/w/c).
+   No other libraries are permitted.
+
+1. __(100 points) `SUBMISSION.md`:__ Your project must include a properly formatted
+   `SUBMISSION.md` file that includes, at a minimum, the following information:
+
+   * __Author Information:__ You need to include your full name, UGA email, and
+     which course you are enrolled in (e.g., CSCI 4730 or CSCI 6730).
+
+   * __Implementation Overview:__ You need to include a few sentences that provide an overview
+     of your implementation.
+
+   * __Reflecton:__ You need to provide answers to the following questions:
+
+     1. What do you think was the motivation behind assigning this project in this class?
+     1. What is the most important thing you learned in this project?
+     1. What do you wish you had spent more time on or done differently?
+     1. What part of the project did you do your best work on?
+     1. What was the most enjoyable part of this project?
+     1. What was the least enjoyable part of this project?
+     1. How could your instructor change this project to make it better next time?
+
+   A properly formatted sample `SUBMISSION.md` file is provided that may be modified to
+   help fulfill this non-functional requirement.
+
+1. __(25 points) Memory Leaks:__ Your submission should not result in any memory leaks.
+   The grader will check this using `valgrind(1)`.
+
+1. __(25 points) Code Documentation:__ Any new functions or macros must be properly documented
+   using Javadoc-style comments. An example of such comments can be seen in the souce code
+   provided with the project. Please also use inline documentation, as needed, to explain
+   ambiguous or tricky parts of your code.
+
+## Submission Instructions
+
+You will still be submitting your project via Nike. Make sure your project files
+are on <code>nike.cs.uga.edu</code>. Change into the parent directory of your
+project directory. If you've followed the instructions provided in earlier in this
+document, then the name of your project directory is likely `csx730-vfs`.
+While in your project parent directory, execute the following command:
+
+```
+$ submit csx730-vfs csx730
+```
+
+If you have any problems submitting your project then please make a private Piazza
+post to "Instructors" as soon as possible.
+
+<hr/>
+
+## Appendix - Example User Programs
 
 ### Example 1
 
@@ -216,3 +321,13 @@ csx730_read(fd, buffer, 5);
 buffer[5] = '\0';
 printf("%s\n", buffer);
 ```
+
+<br/>
+
+[![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg)](http://creativecommons.org/licenses/by-nc-nd/4.0/)
+
+<small>
+Copyright &copy; Michael E. Cotterell and the University of Georgia.
+This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a> to students and the public.
+The content and opinions expressed on this page do not necessarily reflect the views of nor are they endorsed by the University of Georgia or the University System of Georgia.
+</small>
