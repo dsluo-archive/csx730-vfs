@@ -3,7 +3,7 @@
 
 #include <time.h>
 #include <semaphore.h>
-#include "csx730_data.h"
+#include <stdbool.h>
 
 /**
  * Structure for an inode.
