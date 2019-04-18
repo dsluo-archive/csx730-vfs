@@ -53,7 +53,8 @@ gathered using the [Statistics API](#statistics-api).
 
 ### Meta-Data API
 
-This API provides the inode structure. The `inode_t` structure is defined as follows:
+This API provides the inode structure. Readers whould consult `csx730_ioctl.h` for 
+complete documentation. The `inode_t` structure is defined as follows:
 
 ```c
 typedef struct inode {
@@ -69,6 +70,10 @@ typedef struct inode {
   sem_t          sem;        /**< Semaphore. */
 } inode_t;
 ```
+
+**No other implementation is provided for you.** You are responsible for reading and 
+writing the inode data to disk image using the 
+[I/O Control & Basic File System API](#io-control--basic-file-system-api).
 
 ### VFS User Space API
 
