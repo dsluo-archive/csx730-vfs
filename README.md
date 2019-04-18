@@ -129,6 +129,22 @@ managing any necessary in-memory data structures as well as reading and
 writing the inode and superblock data to the disk image using the
 [I/O Control & Basic File System API](#io-control--basic-file-system-api).
 
+You have a lot of flexibility when it comes to the organization of
+the in-memory data sructures needed to facilitate the User Space API.
+At a minimum, you will need to manage some kind of "open file" table
+that maintains read / write offsets per open file -- **it is possible
+to open the same file more than once, ** with independent read / write
+offsets. Unlike a real VFS, this system is _synchronous_, i.e., all
+read / write operations are to be written to the disk image immediately
+via the [I/O Control & Basic File System API](#io-control--basic-file-system-api).
+In the future, you may explore providing intermediate buffers for the
+write operations so that blocks are not written immediately on every
+call to `csx730_write`.
+
+Implementors of this API not required to provide a user space function
+for regular file truncation, however, you may find it conventient to
+write one.
+
 ### Statistics API
 
 This API provides functions for collecting statistics. Users of this API can initialize
