@@ -80,13 +80,16 @@ computing additional statistics. **An implementation is provided for you in `csx
 Readers whould consult `csx730_stat.h` for complete documentation. 
 Here is a summary of the functions provided by the API:
 
-| Function            | Short Description      |
-|---------------------|------------------------|
-| `csx730_ioctl_open` | Opens a disk image.    |
-| `csx730_ioctl_get`  | Gets / reads a block.  |
-| `csx730_ioctl_put`  | Puts / writes a block. |
+| Function                  | Short Description                                       |
+|---------------------------|---------------------------------------------------------|
+| `csx730_stat_init`        | Initialize a statistics object (unbiased).              |
+| `csx730_stat_init_biased` | Initialize a statistics object.                         |
+| `csx730_stat_accept`      | Accepts / collects a new value.                         |
+| `csx730_stat_mean`        | Computes the mean of the accepted values.               | 
+| `csx730_stat_variance`    | Computes the variance of the accepted values.           |
+| `csx730_stat_stddev`      | Computes the standard deviation of the accepted values. |
 
-The `val_t` type and `disk_t` structure are defined as follows:
+The `val_t` type and `stat_t` structure are defined as follows:
 
 ```c
 typedef long double val_t;
