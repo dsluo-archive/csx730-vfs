@@ -17,7 +17,10 @@ defined in their own header file:
 | `csx730_vfs.h`    | | [VFS User Space API](#vfs-user-space-api)                                 |
 | `csx730_stat.h`   | `csx730_stat.so`  | [Statistics API](#statistics-api)                                         |
 
-You can think of the VFS as a stacked architecture involving the first four APIs in the table.
+You can think of the VFS as a stacked architecture involving the first four APIs
+in the table. It supports file names up to `255` characters and, theoretically,
+file sizes up to `18,446,744,073,709,551,615` bytes. It's performance is not the best,
+however, because the inode stuctures are a set of simple linked lists.
 
 <hr/>
 
