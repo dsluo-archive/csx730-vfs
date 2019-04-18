@@ -87,6 +87,24 @@ typedef struct superblock {
 writing the inode and superblock data to the disk image using the
 [I/O Control & Basic File System API](#io-control--basic-file-system-api).
 
+You have a lot of flexibility when it comes to the organization of both
+the VFS meta-data and data within the disk image. The only absolute
+requirement, as far as organization is concerned, is that the beginning
+of the disk image **must be** the `superblock_t` object with the
+appropriate magic number and requisite information. The `inode_t` objects
+can be placed wherever you want within the disk image, however, you
+will want to put some thought into how you lay them out. Remember,
+you will need intermediate in-memory buffers to get / put this information
+from / to the disk image via the
+[I/O Control & Basic File System API](#io-control--basic-file-system-api).
+
+The actual (regular) file data can also be placed wherever you want
+within the disk image. To keep things simple, we'll assume that regular
+file data is stored contiguously in the disk image. This may require you
+to compact / defragment the disk image from time to time to ensure that
+space is available for new files. **A very important consideration is
+that a file may be made bigger via a call to `csx730_write`.**
+
 ### VFS User Space API
 
 This API provides the user space functions for interacting with the VFS. Users of
