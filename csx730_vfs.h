@@ -92,7 +92,7 @@ bool csx730_seek(fd_t fd, size_t offset);
 ssize_t csx730_read(fd_t fd, void * buf, size_t len);
 
 /**
- * WRites @p len bytes of data from the buffer pointed to by @p buf
+ * Writes @p len bytes of data from the buffer pointed to by @p buf
  * into the file referred to by @p fd. This function is generally
  * expected to behave in much the same way as @c write(2).
  *
@@ -103,5 +103,11 @@ ssize_t csx730_read(fd_t fd, void * buf, size_t len);
  *         @c -1 otherwise
  */
 ssize_t csx730_write(fd_t fd, void * buf, size_t len);
+
+/**
+ * Prints the block I/O summary statistics to standard output
+ * according to the format specified in the project description.
+ */
+void csx730_pstats();
 
 #endif // CSX730_VFS_H
