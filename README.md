@@ -388,6 +388,7 @@ csx730_write(fd, msg, strlen(msg));
 
 // read from the file
 char buffer [256];
+csx730_seek(fd, 0);
 csx730_read(fd, buffer, 5);
 buffer[5] = '\0';
 printf("%s\n", buffer);
@@ -410,7 +411,7 @@ fd_t fd = csx730_open(home_root);
 
 // stat the file
 inode_t inode;
-csx730_stat(fd, &inode);
+csx730_fstat(fd, &inode);
 
 if (inode.dir) {
 
