@@ -6,7 +6,7 @@ The `csx730-vfs` project provides a virtual file system (VFS) to user programs t
 is similar to the [Unix File System](https://en.wikipedia.org/wiki/Unix_File_System)
 in terms of both interface and general layout. User programs can create, edit, and
 modify regular files and directories within the file system via a convenient
-User Space API. The architecture for the VFS involves multiple APIs, each 
+User Space API. The architecture for the VFS involves multiple APIs, each
 defined in their own header file:
 
 | Header            | Implementation    | Role                                                                      |
@@ -27,7 +27,7 @@ You can think of the VFS as a stacked architecture involving the first four APIs
 
 This API provides block I/O disk emulation. Users of this API can open disk images and
 get / read and put / write blocks on the opened disks. **An implementation is provided for you
-in `csx730_ioctl.so`.** Readers whould consult `csx730_ioctl.h` for complete documentation. 
+in `csx730_ioctl.so`.** Readers whould consult `csx730_ioctl.h` for complete documentation.
 Here is a summary of the functions provided by the API:
 
 | Function            | Short Description      |
@@ -49,11 +49,11 @@ typedef struct {
 ```
 
 The `disk_t` objects for opened disks contain `stat_t` objects for bock-level I/O statistics
-gathered using the [Statistics API](#statistics-api). 
+gathered using the [Statistics API](#statistics-api).
 
 ### Meta-Data API
 
-This API provides the inode and superblock structurs. Readers whould consult `csx730_meta.h` 
+This API provides the inode and superblock structurs. Readers whould consult `csx730_meta.h`
 for complete documentation. The `inode_t` and `superblock_t` structures are defined as follows:
 
 ```c
@@ -79,19 +79,20 @@ typedef struct superblock {
 } superblock_t;
 ```
 
-**No other implementation is provided for you.** You are responsible for reading and 
+**No other implementation is provided for you.** You are responsible for reading and
 writing the inode and superblock data to the disk image using the
 [I/O Control & Basic File System API](#io-control--basic-file-system-api).
 
 ### VFS User Space API
 
-This API provides the user space functions for interacting with the VFS. Users of 
+This API provides the user space functions for interacting with the VFS. Users of
 this API can create, edit, and modify regular files and directories within the file system
-using a familiar set of functions. Readers whould consult `csx730_vfs.h` 
+using a familiar set of functions. Readers whould consult `csx730_vfs.h`
 for complete documentation. Here is a summary of the functions provided by the API:
 
 | Function           | Short Description
 |--------------------|------------------------------------|
+| `csx730_vfs_init`  | Initialize the file system.        |
 | `csx730_creat`     | Create a file or directory.        |
 | `csx730_open`      | Open a file or directory.          |
 | `csx730_unlink`    | Remove a file or directory.        |
@@ -99,11 +100,10 @@ for complete documentation. Here is a summary of the functions provided by the A
 | `csx730_close`     | Close a file or directory.         |
 | `csx730_seek`      | Reposition read/write file offset. |
 | `csx730_read`      | Read from a file.                  |
-| `csx730_readdir`   | Read from a directory.             |
 | `csx730_write`     | Write to a file.                   |
 
-**No other implementation is provided for you.** You are responsible for 
-managing any necessary in-memory data structures as well as reading and 
+**No other implementation is provided for you.** You are responsible for
+managing any necessary in-memory data structures as well as reading and
 writing the inode and superblock data to the disk image using the
 [I/O Control & Basic File System API](#io-control--basic-file-system-api).
 
@@ -111,9 +111,9 @@ writing the inode and superblock data to the disk image using the
 
 This API provides functions for collecting statistics. Users of this API can initialize
 a statistics object and collect values. As values are collected, certain summary statistics
-are automatically computed and held in the initialized object. Functions are provided for 
-computing additional statistics. **An implementation is provided for you in `csx730_stat.so`.** 
-Readers whould consult `csx730_stat.h` for complete documentation. 
+are automatically computed and held in the initialized object. Functions are provided for
+computing additional statistics. **An implementation is provided for you in `csx730_stat.so`.**
+Readers whould consult `csx730_stat.h` for complete documentation.
 Here is a summary of the functions provided by the API:
 
 | Function                  | Short Description                                       |
@@ -121,7 +121,7 @@ Here is a summary of the functions provided by the API:
 | `csx730_stat_init`        | Initialize a statistics object (unbiased).              |
 | `csx730_stat_init_biased` | Initialize a statistics object.                         |
 | `csx730_stat_accept`      | Accepts / collects a new value.                         |
-| `csx730_stat_mean`        | Computes the mean of the accepted values.               | 
+| `csx730_stat_mean`        | Computes the mean of the accepted values.               |
 | `csx730_stat_variance`    | Computes the variance of the accepted values.           |
 | `csx730_stat_stddev`      | Computes the standard deviation of the accepted values. |
 
@@ -142,12 +142,9 @@ typedef struct {
 } stat_t;
 ```
 
-The `disk_t` objects for opened disks in the 
+The `disk_t` objects for opened disks in the
 [I/O Control & Basic File System API](#io-control--basic-file-system-api)
-contain `stat_t` objects for bock-level I/O statistics gathered using the 
-[Statistics API](#statistics-api). 
+contain `stat_t` objects for bock-level I/O statistics gathered using the
+[Statistics API](#statistics-api).
 
 <hr/>
-
-
-
