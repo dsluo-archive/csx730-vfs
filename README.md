@@ -1,5 +1,24 @@
 # csx730-vfs Virtual File System
 
+> The fibers of all things have their tension and are strained like the strings of an instrument.
+> __--Henry David Thoreau__
+
+**DUE TUE 2019-04-30 (Apr 30) @ 11:55 PM**
+
+This repository contains the skeleton code for the `csx730-vfs` project
+assigned to the students in the Spring 2019 CSCI 4730/6730 class
+at the University of Georgia.
+
+## Academic Honesty
+
+You agree to the Academic Honesty policy as outlined in the course syllabus.
+In accordance with this notice, I must caution you **not** to fork this repository
+on GitHub if you have an account. Doing so will more than likely make your copy of
+the project publicly visible. Please follow the instructions contained in the
+[How to Get the Skeleton Code](#how-to-get-the-skeleton-code) section below in
+order to do your development on Nike. Furthermore, you must adhere to the copyright
+notice and licensing information at the bottom of this document.
+
 ## Overview
 
 The `csx730-vfs` project provides a virtual file system (VFS) to user programs that
@@ -12,12 +31,11 @@ defined in their own header file:
 | Header            | Implementation    | Role                                                                      |
 |-------------------|-------------------|---------------------------------------------------------------------------|
 | `csx730_ioctl.h`  | `csx730_ioctl.so` | [I/O Control & Basic File System API](#io-control--basic-file-system-api) |
-| `csx730_data.h`   | | [File Organization API](#file-organization-api)                           |
 | `csx730_meta.h `  | | [Meta-Data API](#meta-data-api)                                           |
 | `csx730_vfs.h`    | | [VFS User Space API](#vfs-user-space-api)                                 |
 | `csx730_stat.h`   | `csx730_stat.so`  | [Statistics API](#statistics-api)                                         |
 
-You can think of the VFS as a stacked architecture involving the first four APIs
+You can think of the VFS as a stacked architecture involving the first three APIs
 in the table. It supports file names up to `255` characters and, theoretically,
 file sizes up to `18,446,744,073,709,551,615` bytes (`16,384` PiB). It's
 performance is not the best, however, because the inode stuctures are a set of
@@ -222,7 +240,29 @@ There will be no partial credit for any of the requirements that simply
 require the presence of a function related a particular functionality.
 The actual functionality is tested using test cases.
 
-1. TODO
+1. __(25 points) Project Compiles.__ Your submission compiles and can successfully
+   link with object files expecting the symbols defined in all the provided
+   header files. Please be aware that the __Build Compliance__ non-functional
+   requirement still apply.
+
+1. __(75 points) Implement `csx730_malloc.h` functions in `csx730_malloc.c`.__
+   Each of the functions whose prototype appears in the header and does not require
+   the `_CS6760_SOURCE` feature test macro must be implemented correctly in the
+   corresponding `.c` file. Here is a list of the functions forming the user API:
+
+   * __(25 points)__ Meta-Data API
+   * __(25 points)__ VFS User Space API
+
+   The documentation for each function is provided directly in
+   the header. You may generate an HTML version of the corresponding
+   documentation using the `doc` target provided by the project's `Makefile`.
+   Students should not modify the prototypes for these functions in any way--doing
+   so will cause the tester used by the grader to fail.
+
+   You are free,  _actively encouraged_, and will likely need to write
+   other functions, as needed, to support the required set of functions.
+   It is recommended that you give private function names a `_csx730_` prefix.
+
 
 ### Non-Functional Requirements
 
