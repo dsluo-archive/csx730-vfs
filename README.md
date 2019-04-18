@@ -1,7 +1,7 @@
 # csx730-vfs Virtual File System
 
-> The fibers of all things have their tension and are strained like the strings of an instrument.
-> __--Henry David Thoreau__
+> I wanted to have virtual memory, at least as it's coupled with file systems.
+> __--Ken Thompson__
 
 **DUE TUE 2019-04-30 (Apr 30) @ 11:55 PM**
 
