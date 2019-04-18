@@ -25,7 +25,7 @@ You can think of the VFS as a stacked architecture involving the first four APIs
 
 ### I/O Control & Basic File System API
 
-This API provides block I/O disk emulation. Users of the is API can open disk images and
+This API provides block I/O disk emulation. Users of this API can open disk images and
 get / read and put / write blocks on the opened disks. **An implementation is provided for you
 in `csx730_ioctl.so`.** Readers whould consult `csx730_ioctl.h` for complete documentation. 
 Here is a summary of the functions provided by the API:
@@ -53,8 +53,8 @@ gathered using the [Statistics API](#statistics-api).
 
 ### Meta-Data API
 
-This API provides the inode structure. Readers whould consult `csx730_ioctl.h` for 
-complete documentation. The `inode_t` structure is defined as follows:
+This API provides the inode and superblock structurs. Readers whould consult `csx730_meta.h` 
+for complete documentation. The `inode_t` and `superblock_t` structures are defined as follows:
 
 ```c
 typedef struct inode {
@@ -67,15 +67,28 @@ typedef struct inode {
   time_t         atime;      /**< Time of last file access. */
   struct inode * prev;       /**< Previous inode. */
   struct inode * next;       /**< Next inode. */
+  struct inode * child;      /**< First child inode. */
   sem_t          sem;        /**< Semaphore. */
 } inode_t;
 ```
 
+```c
+typedef struct superblock {
+  unsigned int  magic: 32;   /**< The magic number. */
+  unsigned long root_ino;    /**< Root inode number. */
+} superblock_t;
+```
+
 **No other implementation is provided for you.** You are responsible for reading and 
-writing the inode data to disk image using the 
+writing the inode and superblock data to the disk image using the
 [I/O Control & Basic File System API](#io-control--basic-file-system-api).
 
 ### VFS User Space API
+
+This API provides the user space functions for interacting with the VFS. Users of 
+this API can create, edit, and modify regular files and directories within the file system
+using a familiar set of functions. Readers whould consult `csx730_vfs.h` 
+for complete documentation. Here is a summary of the functions provided by the API:
 
 | Function           | Short Description
 |--------------------|------------------------------------|
@@ -89,9 +102,14 @@ writing the inode data to disk image using the
 | `csx730_readdir`   | Read from a directory.             |
 | `csx730_write`     | Write to a file.                   |
 
+**No other implementation is provided for you.** You are responsible for 
+managing any necessary in-memory data structures as well as reading and 
+writing the inode and superblock data to the disk image using the
+[I/O Control & Basic File System API](#io-control--basic-file-system-api).
+
 ### Statistics API
 
-This API provides functions for collecting statistics. Users of the is API can initialize
+This API provides functions for collecting statistics. Users of this API can initialize
 a statistics object and collect values. As values are collected, certain summary statistics
 are automatically computed and held in the initialized object. Functions are provided for 
 computing additional statistics. **An implementation is provided for you in `csx730_stat.so`.** 
