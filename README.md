@@ -130,18 +130,21 @@ this API can create, edit, and modify regular files and directories within the f
 using a familiar set of functions. Readers whould consult `csx730_vfs.h`
 for complete documentation. Here is a summary of the functions provided by the API:
 
-| Function           | Short Description
-|--------------------|------------------------------------|
-| `csx730_vfs_init`  | Initialize the file system.        |
-| `csx730_creat`     | Create a file or directory.        |
-| `csx730_open`      | Open a file or directory.          |
-| `csx730_unlink`    | Remove a file or directory.        |
-| `csx730_stat`      | Get inode information.             |
-| `csx730_close`     | Close a file or directory.         |
-| `csx730_seek`      | Reposition read/write file offset. |
-| `csx730_read`      | Read from a file.                  |
-| `csx730_write`     | Write to a file.                   |
-| `csx730_piostats`  | Print block I/O stats.             |
+| Function            | Short Description
+|---------------------|------------------------------------|
+| `csx730_vfs_init`   | Initialize the file system.        |
+| `csx730_creat`      | Create a file or directory.        |
+| `csx730_open`       | Open a file or directory.          |
+| `csx730_unlink`     | Remove a file or directory.        |
+| `csx730_stat`       | Get inode information.             |
+| `csx730_fstat`      | Get inode information.             |
+| `csx730_close`      | Close a file or directory.         |
+| `csx730_seek`       | Reposition read/write file offset. |
+| `csx730_read`       | Read from a file.                  |
+| `csx730_write`      | Write to a file.                   |
+| `csx730_piostats`   | Print block I/O stats.             |
+| `csx730_stat_next`  | Get inode info for next file.      |
+| `csx730_stat_child` | Get inode info for first file.     |
 
 **No other implementation is provided for you.** You are responsible for
 managing any necessary in-memory data structures as well as reading and
@@ -249,16 +252,16 @@ There will be no partial credit for any of the requirements that simply
 require the presence of a function related a particular functionality.
 The actual functionality is tested using test cases.
 
-1. __(30 points) Project Compiles.__ Your submission compiles and can successfully
+1. __(39 points) Project Compiles.__ Your submission compiles and can successfully
    link with object files expecting the symbols defined in all the provided
    header files. Please be aware that the __Build Compliance__ non-functional
    requirement still apply.
 
-1. __(70 points) Implement `csx730_vfs.h` functions in `csx730_vfs.c`.__
+1. __(61 points) Implement `csx730_vfs.h` functions in `csx730_vfs.c`.__
    Your `Makefile` is expected to produce the following:
 
-   * __(5 points)__ `csx730_vfs.o`
-   * __(5 points)__ `csx730_vfs.so`
+   * __(0.5 points)__ `csx730_vfs.o`
+   * __(0.5 points)__ `csx730_vfs.so`
 
    Programs that link against your `csx730_vfs.o` or `csx730_vfs.so` will also need
    to link against the following shared libraries as well as use `-lrt` and `-lm`:
@@ -268,16 +271,19 @@ The actual functionality is tested using test cases.
 
    Here is a list of the functions that are required:
 
-   * __(10 points)__ `csx730_vfs_init`
-   * __( 6 points)__ `csx730_creat`
-   * __( 6 points)__ `csx730_open`
-   * __( 6 points)__ `csx730_unlink`
-   * __( 5 points)__ `csx730_stat`
+   * __( 5 points)__ `csx730_vfs_init`
+   * __( 5 points)__ `csx730_creat`
+   * __( 5 points)__ `csx730_open`
+   * __( 5 points)__ `csx730_unlink`
+   * __( 3 points)__ `csx730_stat`
+   * __( 2 points)__ `csx730_fstat`
    * __( 5 points)__ `csx730_close`
    * __( 5 points)__ `csx730_seek`
-   * __( 6 points)__ `csx730_read`
-   * __( 6 points)__ `csx730_write`
+   * __( 5 points)__ `csx730_read`
+   * __( 5 points)__ `csx730_write`
    * __( 5 points)__ `csx730_piostats`
+   * __( 5 points)__ `csx730_stat_child`
+   * __( 5 points)__ `csx730_stat_next`
 
    The documentation for each function is provided directly in
    the header. You may generate an HTML version of the corresponding
@@ -359,6 +365,8 @@ post to "Instructors" as soon as possible.
 
 ### Example 1
 
+Here is a simple user program that omits error checking:
+
 ```c
 // initialize the file system
 csx730_vfs_init("some_disk.img", 256);
@@ -384,6 +392,34 @@ csx730_read(fd, buffer, 5);
 buffer[5] = '\0';
 printf("%s\n", buffer);
 ```
+
+### Example 2
+
+Here is another simple user program that assumes the previous program
+has already been executed:
+
+```c
+// initialize the file system
+csx730_vfs_init("some_disk.img", 256);
+
+// setup paths for /home/root
+const char * home_root = { "home", "root", NULL };
+
+// open /home/root
+fd_t fd = csx730_open(home_root);
+
+// stat the file
+inode_t inode;
+csx730_stat(fd, &inode);
+
+if (inode.dir) {
+  printf("%s is a directory!\n", inode.name);
+
+} else {
+  printf("%s is a regular file!\n", inode.name);
+} // if
+```
+
 
 <br/>
 

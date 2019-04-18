@@ -53,10 +53,23 @@ bool csx730_unlink(const char ** path);
  * Gets the inode information for this file and stores it in
  * the structure pointed to by @p inode.
  *
+ * @param path  path to file in the VFS
+ * @param inode destination structure
  * @return @c true if the inode info is successfully retrieved;
  *         @c false otherwise
  */
-bool csx730_stat(fd_t fd, inode_t * inode);
+bool csx730_stat(const char ** path, inode_t * inode);
+
+/**
+ * Gets the inode information for this file and stores it in
+ * the structure pointed to by @p inode.
+ *
+ * @param fd  file descriptor returned from @c csx730_open
+ * @param inode destination structure
+ * @return @c true if the inode info is successfully retrieved;
+ *         @c false otherwise
+ */
+bool csx730_fstat(fd_t fd, inode_t * inode);
 
 /**
  * Closes the file referred to by @p fd.
@@ -103,6 +116,30 @@ ssize_t csx730_read(fd_t fd, void * buf, size_t len);
  *         @c -1 otherwise
  */
 ssize_t csx730_write(fd_t fd, void * buf, size_t len);
+
+/**
+ * Gets the inode information for the next file in a
+ * directory and stores it in the structure pointed to
+ * by @p inode.
+ *
+ * @param fd  file descriptor returned from @c csx730_open
+ * @param inode destination structure
+ * @return @c true if the inode info is successfully retrieved;
+ *         @c false otherwise
+ */
+bool csx730_stat_next(fd_t fd, inode_t * inode);
+
+/**
+ * Gets the inode information for the first file in a
+ * directory and stores it in the structure pointed to
+ * by @p inode.
+ *
+ * @param fd  file descriptor returned from @c csx730_open
+ * @param inode destination structure
+ * @return @c true if the inode info is successfully retrieved;
+ *         @c false otherwise
+ */
+bool csx730_stat_child(fd_t fd, inode_t * buf);
 
 /**
  * Prints the block I/O summary statistics to standard output
