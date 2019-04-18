@@ -164,6 +164,14 @@ Implementors of this API not required to provide a user space function
 for regular file truncation, however, you may find it conventient to
 write one.
 
+The output format for the `csx730_piostats` function is as follows:
+
+```
+Block I/O Stats:
+* gets [ count = %zu; sum = %Lf; min = %Lf; mean = %Lf; max = %Lf ]
+* puts [ count = %zu; sum = %Lf; min = %Lf; mean = %Lf; max = %Lf ]
+```
+
 ### Statistics API
 
 This API provides functions for collecting statistics. Users of this API can initialize
@@ -248,16 +256,16 @@ The actual functionality is tested using test cases.
 
 1. __(70 points) Implement `csx730_vfs.h` functions in `csx730_vfs.c`.__
    Your `Makefile` is expected to produce the following:
-   
+
    * __(5 points)__ `csx730_vfs.o`
    * __(5 points)__ `csx730_vfs.so`
-   
-   Programs that link against your `csx730_vfs.o` or `csx730_vfs.so` will also need 
+
+   Programs that link against your `csx730_vfs.o` or `csx730_vfs.so` will also need
    to link against the following shared libraries as well as use `-lrt` and `-lm`:
-   
+
    * `csx730_ioctl.so`
    * `csx730_stat.so`
-   
+
    Here is a list of the functions that are required:
 
    * __(10 points)__ `csx730_vfs_init`
@@ -298,7 +306,7 @@ being subtracted from your point total. That is, they are all or nothing.
 
 1. __(100 points) Libraries:__ You are allowed to use any of the C standard library
    functions. A reference is provided [here](https://en.cppreference.com/w/c).
-   No other libraries are permitted. 
+   No other libraries are permitted.
 
 1. __(100 points) `SUBMISSION.md`:__ Your project must include a properly formatted
    `SUBMISSION.md` file that includes, at a minimum, the following information:
