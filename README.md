@@ -73,6 +73,44 @@ gathered using the [Statistics API](#statistics-api).
 
 ### Statistics API
 
+This API provides functions for collecting statistics. Users of the is API can initialize
+a statistics object and collect values. As values are collected, certain summary statistics
+are automatically computed and held in the initialized object. Functions are provided for 
+computing additional statistics. **An implementation is provided for you in `csx730_stat.so`.** 
+Readers whould consult `csx730_stat.h` for complete documentation. 
+Here is a summary of the functions provided by the API:
+
+| Function                  | Short Description                                       |
+|---------------------------|---------------------------------------------------------|
+| `csx730_stat_init`        | Initialize a statistics object (unbiased).              |
+| `csx730_stat_init_biased` | Initialize a statistics object.                         |
+| `csx730_stat_accept`      | Accepts / collects a new value.                         |
+| `csx730_stat_mean`        | Computes the mean of the accepted values.               | 
+| `csx730_stat_variance`    | Computes the variance of the accepted values.           |
+| `csx730_stat_stddev`      | Computes the standard deviation of the accepted values. |
+
+The `val_t` type and `stat_t` structure are defined as follows:
+
+```c
+typedef long double val_t;
+```
+
+```c
+typedef struct {
+  bool   unbiased; /**< Whether the estimators are restricted to be unbiased. */
+  size_t n;        /**< The number of values accepted. */
+  val_t  sum;      /**< The sum of the accepted values. */
+  val_t  sumSq;    /**< The sum of the squares of the accepted values. */
+  val_t  min;      /**< The minimum value accepted. */
+  val_t  max;      /**< The maximum value accepted. */
+} stat_t;
+```
+
+The `disk_t` objects for opened disks in the 
+[I/O Control & Basic File System API](#io-control--basic-file-system-api)
+contain `stat_t` objects for bock-level I/O statistics gathered using the 
+[Statistics API](#statistics-api). 
+
 <hr/>
 
 
