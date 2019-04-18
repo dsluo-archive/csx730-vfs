@@ -18,7 +18,17 @@ typedef struct inode {
   time_t         atime;      /**< Time of last file access. */
   struct inode * prev;       /**< Previous inode. */
   struct inode * next;       /**< Next inode. */
+  struct inode * child;      /**< First child inode. */
   sem_t          sem;        /**< Semaphore. */
 } inode_t;
+
+/**
+ * Structure for a superblock. The magic number for a superblock
+ * is expected to be @c 0xDEADBEEF.
+ */
+typedef struct superblock {
+  unsigned int  magic: 32;   /**< The magic number. */
+  unsigned long root_ino;    /**< Root inode number. */
+} superblock_t;
 
 #endif // CSX730_META_H
