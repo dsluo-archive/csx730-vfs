@@ -65,17 +65,17 @@ typedef struct inode {
   size_t         bno;        /**< Starting block number for file data. */
   size_t         offset;     /**< Offset of file data in starting block. */
   time_t         atime;      /**< Time of last file access. */
-  struct inode * prev;       /**< Previous inode. */
-  struct inode * next;       /**< Next inode. */
-  struct inode * child;      /**< First child inode. */
+  unsigned long  prev;       /**< Previous inode number. */
+  unsigned long  next;       /**< Next inode. number. */
+  unsigned long  child;      /**< First child inode number. */
   sem_t          sem;        /**< Semaphore. */
 } inode_t;
 ```
 
 ```c
 typedef struct superblock {
-  unsigned int  magic: 32;   /**< The magic number. */
-  unsigned long root_ino;    /**< Root inode number. */
+  unsigned int  magic: 32;   /**< The magic number (0xdeadbeef). */
+  unsigned long root;        /**< Root inode number. */
 } superblock_t;
 ```
 
