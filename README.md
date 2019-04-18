@@ -141,6 +141,7 @@ for complete documentation. Here is a summary of the functions provided by the A
 | `csx730_seek`      | Reposition read/write file offset. |
 | `csx730_read`      | Read from a file.                  |
 | `csx730_write`     | Write to a file.                   |
+| `csx730_piostats`  | Print block I/O stats.             |
 
 **No other implementation is provided for you.** You are responsible for
 managing any necessary in-memory data structures as well as reading and
@@ -240,18 +241,35 @@ There will be no partial credit for any of the requirements that simply
 require the presence of a function related a particular functionality.
 The actual functionality is tested using test cases.
 
-1. __(25 points) Project Compiles.__ Your submission compiles and can successfully
+1. __(30 points) Project Compiles.__ Your submission compiles and can successfully
    link with object files expecting the symbols defined in all the provided
    header files. Please be aware that the __Build Compliance__ non-functional
    requirement still apply.
 
-1. __(75 points) Implement `csx730_malloc.h` functions in `csx730_malloc.c`.__
-   Each of the functions whose prototype appears in the header and does not require
-   the `_CS6760_SOURCE` feature test macro must be implemented correctly in the
-   corresponding `.c` file. Here is a list of the functions forming the user API:
+1. __(70 points) Implement `csx730_vfs.h` functions in `csx730_vfs.c`.__
+   Your `Makefile` is expected to produce the following:
+   
+   * __(5 points)__ `csx730_vfs.o`
+   * __(5 points)__ `csx730_vfs.so`
+   
+   Programs that link against your `csx730_vfs.o` or `csx730_vfs.so` will also need 
+   to link against the following shared libraries as well as use `-lrt` and `-lm`:
+   
+   * `csx730_ioctl.so`
+   * `csx730_stat.so`
+   
+   Here is a list of the functions that are required:
 
-   * __(25 points)__ Meta-Data API
-   * __(25 points)__ VFS User Space API
+   * __(10 points)__ `csx730_vfs_init`
+   * __( 6 points)__ `csx730_creat`
+   * __( 6 points)__ `csx730_open`
+   * __( 6 points)__ `csx730_unlink`
+   * __( 5 points)__ `csx730_stat`
+   * __( 5 points)__ `csx730_close`
+   * __( 5 points)__ `csx730_seek`
+   * __( 6 points)__ `csx730_read`
+   * __( 6 points)__ `csx730_write`
+   * __( 5 points)__ `csx730_piostats`
 
    The documentation for each function is provided directly in
    the header. You may generate an HTML version of the corresponding
@@ -259,7 +277,7 @@ The actual functionality is tested using test cases.
    Students should not modify the prototypes for these functions in any way--doing
    so will cause the tester used by the grader to fail.
 
-   You are free,  _actively encouraged_, and will likely need to write
+   You are free, _actively encouraged_, and will likely need to write
    other functions, as needed, to support the required set of functions.
    It is recommended that you give private function names a `_csx730_` prefix.
 
@@ -275,15 +293,12 @@ being subtracted from your point total. That is, they are all or nothing.
    assemble, and link with no errors or warnings. The required compiler
    flags for this project are already included in the provided `Makefile`.
 
-   The grader will compile and test your code using `all` and `test` targets in
-   the provided `Makefile`. The `test` target will not work until the test driver
-   is provided during grading. If your code compiles, assembles, and links
-   with no errors or warnings using the `all` target, then it will very likely
-   do the same with the `test` target.
+   The grader will compile and test your code using `all` target in
+   the provided `Makefile`.
 
 1. __(100 points) Libraries:__ You are allowed to use any of the C standard library
    functions. A reference is provided [here](https://en.cppreference.com/w/c).
-   No other libraries are permitted.
+   No other libraries are permitted. 
 
 1. __(100 points) `SUBMISSION.md`:__ Your project must include a properly formatted
    `SUBMISSION.md` file that includes, at a minimum, the following information:
