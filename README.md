@@ -148,3 +148,33 @@ contain `stat_t` objects for bock-level I/O statistics gathered using the
 [Statistics API](#statistics-api).
 
 <hr/>
+
+## Example User Programs
+
+### Example 1
+
+```c
+// initialize the file system
+csx730_vfs_init("some_disk.img", 256);
+
+// setup paths for  /home/root/README.md
+const char * home = { "home", NULL };
+const char * home_root = { "home", "root", NULL };
+const char * home_root_readme = { "home", "root", "README.md", NULL };
+
+// create directories and files
+csx730_creat(home, true);
+csx730_creat(home_root, true);
+csx730_creat(home_root_readme, false);
+
+// open and write to the file
+fd_t fd = csx730_open(home_root_readme);
+const char * msg = "stuff";
+csx730_write(fd, msg, strlen(msg));
+
+// read from the file
+char buffer [256];
+csx730_read(fd, buffer, 5);
+buffer[5] = '\0';
+printf("%s\n", buffer);
+```
