@@ -7,8 +7,11 @@ RM=rm -f
 
 all: csx730_vfs_driver
 
-csx730_vfs_driver: csx730_vfs_driver.o csx730_vfs.so
-	$(CC) -o csx730_vfs_driver csx730_vfs_driver.o csx730_vfs.so
+csx730_vfs_driver: csx730_vfs_driver.o csx730_vfs.so csx730_stat.so csx730_ioctl.so
+	$(CC) -o csx730_vfs_driver \
+	csx730_vfs_driver.o \
+	csx730_vfs.so csx730_stat.so csx730_ioctl.so \
+	-lrt -lm
 
 csx730_vfs_driver.o: csx730_vfs_driver.c csx730_vfs.h csx730_meta.h csx730_stat.h
 	$(CC) $(CFLAGS) -c -o csx730_vfs_driver.o csx730_vfs_driver.c
