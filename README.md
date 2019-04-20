@@ -49,7 +49,7 @@ simple linked lists.
 
 This API provides block I/O disk emulation. Users of this API can open disk images and
 get / read and put / write blocks on the opened disks. **An implementation is provided for you
-in `csx730_ioctl.so`.** Readers whould consult `csx730_ioctl.h` for complete documentation.
+in `csx730_ioctl.so`.** Readers should consult `csx730_ioctl.h` for complete documentation.
 Here is a summary of the functions provided by the API:
 
 | Function            | Short Description      |
@@ -75,7 +75,7 @@ gathered using the [Statistics API](#statistics-api).
 
 ### Meta-Data API
 
-This API provides the inode and superblock structurs. Readers whould consult `csx730_meta.h`
+This API provides the inode and superblock structures. Readers should consult `csx730_meta.h`
 for complete documentation. The `inode_t` and `superblock_t` structures are defined as follows:
 
 ```c
@@ -127,7 +127,7 @@ that a file may be made bigger via a call to `csx730_write`.**
 
 This API provides the user space functions for interacting with the VFS. Users of
 this API can create, edit, and modify regular files and directories within the file system
-using a familiar set of functions. Readers whould consult `csx730_vfs.h`
+using a familiar set of functions. Readers should consult `csx730_vfs.h`
 for complete documentation. Here is a summary of the functions provided by the API:
 
 | Function            | Short Description
@@ -155,7 +155,7 @@ You have a lot of flexibility when it comes to the organization of
 the in-memory data sructures needed to facilitate the User Space API.
 At a minimum, you will need to manage some kind of "open file" table
 that maintains read / write offsets per open file -- **it is possible
-to open the same file more than once, ** with independent read / write
+to open the same file more than once,** with independent read / write
 offsets. Unlike a real VFS, this system is _synchronous_, i.e., all
 read / write operations are to be written to the disk image immediately
 via the [I/O Control & Basic File System API](#io-control--basic-file-system-api).
