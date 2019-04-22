@@ -9,7 +9,7 @@
  * Structure for an inode.
  */
 typedef struct inode {
-  char           name [255]; /**< Name of the file. */
+  char           name [256]; /**< Name of the file. */
   unsigned long  ino;        /**< Inode number. */
   bool           dir;        /**< Whether or not the file is a directory. */
   size_t         size;       /**< Size of the file. */
