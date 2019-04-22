@@ -27,7 +27,8 @@ typedef struct {
 /**
  * Opens a disk whose image is located at @p path with the specified
  * @p size. If the image cannot be loaded, then this function
- * returns @c -1 and @c errno is set appropriately.
+ * returns @c -1 and @c errno is set appropriately. If the disk image
+ * does not exist, then this function attempts to create it. 
  *
  * @param disk pointer to @c disk_t object
  * @param path path to disk image within the traditional file system
