@@ -217,6 +217,37 @@ contain `stat_t` objects for bock-level I/O statistics gathered using the
 
 <hr/>
 
+## Where to Get Started?
+
+There are three major parts that you will need to get working. They can be summarized as follows:
+
+1. **Disk Image Organization:** How do you want to organize the superblock, inodes, and regular 
+   file data areas on the disk image? Once you have a plan, you can write some functions to do the 
+   following by interacting with the I/O controller: i) get/set superblock; ii) get/set/add/remove 
+   inodes; and iii) get/set/add/remove regular file data areas. This can be tricky as you are forced 
+   to read/write 4K-sized blocks with the I/O controller. This may impact your strategy for storing 
+   the inodes and data areas. Common implementations for both inode and data area allocation are: 
+   contiguous, linked, hashed, and indexed. You do not have to allocate the inodes and data areas 
+   using the same strategy -- in fact, the project description assumes that a single regular file's 
+   data is stored contiguously in the disk image.
+
+1. **Virtual Memory Organization:** How do you want to store the open file table in virtual memory?
+   You know that the same file can be open multiple times, each time with its own read/write offset. 
+   You'll need to store this information in some kind of table in virtual memory. It's usually not 
+   as simple as an array of in-memory inodes -- this is because we want to keep track of free spots 
+   in the table. I recommend a struct that contains at least these things: i) used/free indicator;
+   ii) copy of the file's inode; iii) read/write offset; and iv) pointers to the prev/next free entry.
+   You can then employ a contiguous allocation strategy for the table using `malloc`/`realloc` -- 
+   this gives you random access to each open file and and the first free spot in the table 
+   (if you're careful).
+
+1. **User Space Functions:** How are the functions in the User Space API going to interact with 
+   the objects in virtual memory and in the disk image? Much of this is simplified as the project 
+   description assumes synchronous operations -- that is, most changes to the file system via this 
+   API are realized immediately instead of being scheduled for a later time. 
+
+If you have an idea and want some feedback, feel free to discuss it on Piazza. 
+
 ## How to Get the Skeleton Code
 
 On Nike, execute the following terminal command in order to download the project
