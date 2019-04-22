@@ -226,20 +226,30 @@ There are three major parts that you will need to get working. They can be summa
    following by interacting with the I/O controller: i) get/set superblock; ii) get/set/add/remove 
    inodes; and iii) get/set/add/remove regular file data areas. This can be tricky as you are forced 
    to read/write 4K-sized blocks with the I/O controller. This may impact your strategy for storing 
-   the inodes and data areas. Common implementations for both inode and data area allocation are: 
-   contiguous, linked, hashed, and indexed. You do not have to allocate the inodes and data areas 
-   using the same strategy -- in fact, the project description assumes that a single regular file's 
-   data is stored contiguously in the disk image.
+   the inodes and data areas. 
+   
+   Common implementations for both inode and data area allocation are: contiguous, linked, hashed, 
+   and indexed. You do not have to allocate the inodes and data areas using the same strategy -- in 
+   fact, the project description assumes that a single regular file's data is stored contiguously in
+   the disk image.
+   
+   You should take care to consider that the underlying `disk_t` only has `size`-many blocks of
+   legnth `DISK_BLOCK_SIZE`. This means that you can run out of disk space! Operations such as
+   `csx730_creat` and `csx730_write` (and perhaps others) should fail if you run out of space
+   and are unable to make more room by moving things around -- you may consider implementing some 
+   kind of defragmentation / cleanup procedure for this.
 
 1. **Virtual Memory Organization:** How do you want to store the open file table in virtual memory?
    You know that the same file can be open multiple times, each time with its own read/write offset. 
    You'll need to store this information in some kind of table in virtual memory. It's usually not 
    as simple as an array of in-memory inodes -- this is because we want to keep track of free spots 
-   in the table. I recommend a struct that contains at least these things: i) used/free indicator;
+   in the table. 
+   
+   I recommend a struct that contains at least these things: i) used/free indicator;
    ii) copy of the file's inode; iii) read/write offset; and iv) pointers to the prev/next free entry.
    You can then employ a contiguous allocation strategy for the table using `malloc`/`realloc` -- 
-   this gives you random access to each open file and and the first free spot in the table 
-   (if you're careful).
+   this gives you random access to each open file as well as constant time access to the first free 
+   spot in the table if you implement it carefully.
 
 1. **User Space Functions:** How are the functions in the User Space API going to interact with 
    the objects in virtual memory and in the disk image? Much of this is simplified as the project 
