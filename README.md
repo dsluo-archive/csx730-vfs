@@ -9,6 +9,23 @@ This repository contains the skeleton code for the `csx730-vfs` project
 assigned to the students in the Spring 2019 CSCI 4730/6730 class
 at the University of Georgia.
 
+## Table of Contents
+
+* [Academic Honesty](#academic-honesty)
+* [Project Overview](#project-overview)
+* [API Descriptions](#api-descriptions)
+  * [I/O Control & Basic File System API](#io-control--basic-file-system-api)
+  * [Meta-Data API](#meta-data-api)
+  * [VFS User Space API](#vfs-user-space-api)
+  * [Statistics API](#statistics-api)
+* [Where to Get Started?](#where-to-get-started)
+* [How to Get the Skeleton Code](#how-to-get-the-skeleton-code)
+* [Project Requirements](#project-requirements)
+  * [Functional Requirements](#functional-requirements)
+  * [Non-Functional Requirements](#non-functional-requirements)
+* [Submission Instructions](#submission-instructions)
+* [Appendix - Example User Programs](#appendix---example-user-programs)
+
 ## Academic Honesty
 
 You agree to the Academic Honesty policy as outlined in the course syllabus.
@@ -19,7 +36,7 @@ the project publicly visible. Please follow the instructions contained in the
 order to do your development on Nike. Furthermore, you must adhere to the copyright
 notice and licensing information at the bottom of this document.
 
-## Overview
+## Project Overview
 
 The `csx730-vfs` project provides a virtual file system (VFS) to user programs that
 is similar to the [Unix File System](https://en.wikipedia.org/wiki/Unix_File_System)
