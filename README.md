@@ -430,9 +430,9 @@ Here is a simple user program that omits error checking:
 csx730_vfs_init("some_disk.img", 256);
 
 // setup paths for  /home/root/README.md
-const char * home = { "home", NULL };
-const char * home_root = { "home", "root", NULL };
-const char * home_root_readme = { "home", "root", "README.md", NULL };
+const char * home [] = { "home", NULL };
+const char * home_root [] = { "home", "root", NULL };
+const char * home_root_readme [] = { "home", "root", "README.md", NULL };
 
 // create directories and files
 csx730_creat(home, true);
@@ -462,7 +462,7 @@ has already been executed:
 csx730_vfs_init("some_disk.img", 256);
 
 // setup paths for /home/root
-const char * home_root = { "home", "root", NULL };
+const char * home_root [] = { "home", "root", NULL };
 
 // open /home/root
 fd_t fd = csx730_open(home_root);
