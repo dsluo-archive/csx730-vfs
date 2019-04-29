@@ -2,14 +2,15 @@
 #include "csx730_ioctl.h"
 #include <string.h>
 
-#define SUCCESS(call) if (!(call)) return false;
+#define SUCCESS(call) if (!(call)) return false
+#define VOID_MATH(math_stuff) (void *)((char *) math_stuff)
 
 struct {
     disk_t disk;
 } __global;
 
 // https://stackoverflow.com/a/2745086
-size_t ceil_div(x, y) {
+size_t ceil_div(size_t x, size_t y) {
     return 1 + ((x - 1) / y);
 }
 
@@ -26,12 +27,12 @@ bool disk_read(disk_t * disk, size_t offset, size_t len, void * data) {
 
     // middle blocks
     for (size_t i = 1; i < block_count - 1; i++) {
-        SUCCESS(csx730_ioctl_get(disk, i + block_num, data + DISK_BLOCK_SIZE * i));
+        SUCCESS(csx730_ioctl_get(disk, i + block_num, VOID_MATH(data + DISK_BLOCK_SIZE * i)));
     }
 
     // last block
     SUCCESS(csx730_ioctl_get(disk, block_num + block_count, (void *) &block));
-    SUCCESS(memcpy(data + DISK_BLOCK_SIZE * block_count, &block, block_offset));
+    SUCCESS(memcpy(VOID_MATH(data + DISK_BLOCK_SIZE * block_count), &block, block_offset));
     
     return true;
 }
@@ -50,12 +51,12 @@ bool disk_write(disk_t * disk, size_t offset, size_t len, void * data) {
 
     // middle blocks
     for (size_t i = 1; i < block_count - 1; i++) {
-        SUCCESS(csx730_ioctl_put(disk, i + block_num, data + DISK_BLOCK_SIZE * i));
+        SUCCESS(csx730_ioctl_put(disk, i + block_num, VOID_MATH(data + DISK_BLOCK_SIZE * i)));
     }
 
     // last block
     SUCCESS(csx730_ioctl_get(disk, block_num + block_count, (void *) &block));
-    SUCCESS(memcpy(&block, data + DISK_BLOCK_SIZE * block_count, block_offset));
+    SUCCESS(memcpy(&block, VOID_MATH(data + DISK_BLOCK_SIZE * block_count), block_offset));
     SUCCESS(csx730_ioctl_put(disk, block_num + block_count, (void *) &block));
     
     return true;
