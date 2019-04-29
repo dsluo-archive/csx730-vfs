@@ -1,7 +1,5 @@
 #include "csx730_extra.h"
-
-#define SUCCESS(call) if (!(call)) return false
-#define VOID_MATH(math_stuff) (void *)((char *) math_stuff)
+#include <string.h>
 
 // https://stackoverflow.com/a/2745086
 size_t ceil_div(size_t x, size_t y) {

@@ -3,6 +3,10 @@
 #ifndef CSX730_EXTRA_H
 #define CSX730_EXTRA_H
 
+#define SUCCESS(call) if (!(call)) return false
+#define VOID_MATH(math_stuff) (void *)((char *) math_stuff)
+
+
 /**
  * Allows for arbitrary write on a @c disk_t object.
  * 
