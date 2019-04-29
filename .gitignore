@@ -1,2 +1,4 @@
 .vscode/
 *.o
+csx730_vfs_driver
+csx730_vfs.so
