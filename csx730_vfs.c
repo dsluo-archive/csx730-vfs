@@ -9,6 +9,10 @@
 
 void cleanup(void) {
     free(__global.table);
+
+    for (file_t * file = __global.files_head->next; file != __global.files_tail; file = file->next)
+        free(file->prev);
+    free(__global.files_tail);
 }
 
 bool csx730_vfs_init(const char * disk_image, size_t size) {
