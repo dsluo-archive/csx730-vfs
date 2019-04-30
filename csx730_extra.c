@@ -1,55 +1,49 @@
 #include "csx730_extra.h"
 #include <string.h>
 
-// https://stackoverflow.com/a/2745086
-size_t ceil_div(size_t x, size_t y) {
-    return 1 + ((x - 1) / y);
-}
 
 bool disk_read(disk_t * disk, size_t offset, size_t len, void * data) {
-    size_t block_num = offset / DISK_BLOCK_SIZE; 
-    size_t block_offset = offset % DISK_BLOCK_SIZE;
-    size_t block_count = ceil_div((len + block_offset), DISK_BLOCK_SIZE);
+    const size_t block_num = offset / DISK_BLOCK_SIZE; 
+    const size_t block_offset = offset % DISK_BLOCK_SIZE;
+    const size_t block_count = ceil_div(block_offset + len, DISK_BLOCK_SIZE);
 
-    char block[DISK_BLOCK_SIZE];
+    const size_t data_offset = DISK_BLOCK_SIZE - block_offset;
 
-    // first block
-    SUCCESS(csx730_ioctl_get(disk, block_num, (void *) block));
-    SUCCESS(memcpy(data, &block + block_offset, DISK_BLOCK_SIZE - block_offset));
-
-    // middle blocks
-    for (size_t i = 1; i < block_count - 1; i++) {
-        SUCCESS(csx730_ioctl_get(disk, i + block_num, VOID_MATH(data + DISK_BLOCK_SIZE * i)));
+    char buffer[DISK_BLOCK_SIZE];
+    for (size_t i = 0; i < block_count; i++) {
+        SUCCESS(csx730_ioctl_get(disk, block_num + i, buffer));
+        if (i == 0) {
+            SUCCESS(memcpy(data, buffer + block_offset, MIN(data_offset, len)));
+        } else if (i == block_count - 1) {
+            SUCCESS(memcpy((char *) data + data_offset + (i - 1) * DISK_BLOCK_SIZE, buffer, block_count * DISK_BLOCK_SIZE - block_offset - len));
+        } else {
+            SUCCESS(memcpy((char *) data + data_offset + (i - 1) * DISK_BLOCK_SIZE, buffer, DISK_BLOCK_SIZE));
+        }
     }
-
-    // last block
-    SUCCESS(csx730_ioctl_get(disk, block_num + block_count, (void *) &block));
-    SUCCESS(memcpy(VOID_MATH(data + DISK_BLOCK_SIZE * block_count), &block, block_offset));
     
     return true;
 }
 
 bool disk_write(disk_t * disk, size_t offset, size_t len, void * data) {
-    size_t block_num = offset / DISK_BLOCK_SIZE; 
-    size_t block_offset = offset % DISK_BLOCK_SIZE;
-    size_t block_count = ceil_div((len + block_offset), DISK_BLOCK_SIZE);
+    const size_t block_num = offset / DISK_BLOCK_SIZE; 
+    const size_t block_offset = offset % DISK_BLOCK_SIZE;
+    const size_t block_count = ceil_div(block_offset + len, DISK_BLOCK_SIZE);
 
-    char block[DISK_BLOCK_SIZE];
+    const size_t data_offset = DISK_BLOCK_SIZE - block_offset;
 
-    // first block
-    SUCCESS(csx730_ioctl_get(disk, block_num, (void *) &block));
-    SUCCESS(memcpy(&block + block_offset, data, DISK_BLOCK_SIZE - block_offset));
-    SUCCESS(csx730_ioctl_put(disk, block_num, (void *) &block));
-
-    // middle blocks
-    for (size_t i = 1; i < block_count - 1; i++) {
-        SUCCESS(csx730_ioctl_put(disk, i + block_num, VOID_MATH(data + DISK_BLOCK_SIZE * i)));
+    char buffer[DISK_BLOCK_SIZE];
+    for (size_t i = 0; i < block_count; i++) {
+        // todo: do we care if this fails?
+        csx730_ioctl_get(disk, block_num + i, buffer);
+        if (i == 0) {
+            SUCCESS(memcpy(buffer + block_offset, data, MIN(data_offset, len)));
+        } else if (i == block_count - 1) {
+            SUCCESS(memcpy(buffer, (char *) data + data_offset + (i - 1) * DISK_BLOCK_SIZE, block_count * DISK_BLOCK_SIZE - block_offset - len));
+        } else {
+            SUCCESS(memcpy(buffer, (char *) data + data_offset + (i - 1) * DISK_BLOCK_SIZE, DISK_BLOCK_SIZE));
+        }
+        SUCCESS(csx730_ioctl_put(disk, block_num + i, buffer));
     }
-
-    // last block
-    SUCCESS(csx730_ioctl_get(disk, block_num + block_count, (void *) &block));
-    SUCCESS(memcpy(&block, VOID_MATH(data + DISK_BLOCK_SIZE * block_count), block_offset));
-    SUCCESS(csx730_ioctl_put(disk, block_num + block_count, (void *) &block));
     
     return true;
 }

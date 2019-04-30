@@ -6,7 +6,18 @@
 #define SUCCESS(call) if (!(call)) return false
 #define VOID_MATH(math_stuff) (void *)((char *) math_stuff)
 
+/**
+ * Utility macro to ceil divide two numbers
+ * @param x         The dividend
+ * @param y         The divisor
+ * @return the cieling of @c x / @c y
+ */
+// https://stackoverflow.com/a/2745086
+#define ceil_div(x, y) (1 + (((x) - 1) / (y)))
 
+
+#define MAX(x, y) ((x) > (y) ? (x) : (y))
+#define MIN(x, y) ((x) < (y) ? (x) : (y))
 /**
  * Allows for arbitrary write on a @c disk_t object.
  * 
