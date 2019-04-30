@@ -119,6 +119,37 @@ bool csx730_creat(const char ** path, bool dir) {
 
     return true;
 }
+
+fd_t csx730_open(const char ** path);
+bool csx730_unlink(const char ** path) {
+    inode_t * inode = get_inode(path, __global.table);
+    if (inode == NULL) 
+        return false;
+
+    const char ** parent_path = dirname(path); 
+    inode_t * parent = get_inode(parent_path, __global.table);
+    free_dirname(parent_path);
+
+    inode_t * prev = get_inode_ino(inode->prev, __global.table);
+    inode_t * next = get_inode_ino(inode->next, __global.table);
+
+    if (parent->child == inode->ino) // if this is head of directory list
+        parent->child = next != NULL ? next->ino : NULL_INODE;
+
+    if (prev && next) {
+        prev->next = next->ino;
+        next->prev = prev->ino;
+    } else if (prev && !next) {
+        prev->next = NULL_INODE;
+    } else if (!prev && next) {
+        next->prev = NULL_INODE;
+    }
+
+    memset(inode, 0, sizeof(inode));
+
+    return true;
+}
+
 bool csx730_stat(const char ** path, inode_t * inode) {
     inode_t * found = get_inode(path, __global.table);
     if (found != NULL) {
