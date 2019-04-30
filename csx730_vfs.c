@@ -8,7 +8,8 @@
 
 struct {
     disk_t disk;
-    inode_t * table; // root is always table[0]
+    inode_t * table; // root is always table[0], but inode #1
+    size_t table_size;
 } __global;
 
 bool csx730_vfs_init(const char * disk_image, size_t size) {
@@ -32,6 +33,7 @@ bool csx730_vfs_init(const char * disk_image, size_t size) {
     inode_space = inode_count * sizeof(inode_t); // trim off extra space not used
 
     __global.table = calloc(inode_count, sizeof(inode_t));
+    __global.table_size = inode_count;
 
     superblock_t superblock;
     bool init = disk_read(&__global.disk, 0, sizeof(superblock_t), (void *) &superblock);
@@ -46,15 +48,15 @@ bool csx730_vfs_init(const char * disk_image, size_t size) {
         // init root inode
         inode_t root = {
             .name="/",
-            .ino=0,
+            .ino=1, // inode numbers are 1 + their index in the table; 0 means unallocated/null.
             .dir=true,
             .size=0, // todo: what should this be for directories
             .bno=0,
             .offset=sizeof(superblock_t),
             .atime=0, // todo time of creation
-            .prev=0,
-            .next=0,
-            .child=0,
+            .prev=NULL_INODE,
+            .next=NULL_INODE,
+            .child=NULL_INODE,
         };
         // todo: idk how much this should be initialized for.
         // SUCCESS(sem_init(&root.sem, true, 1));
@@ -68,4 +70,12 @@ bool csx730_vfs_init(const char * disk_image, size_t size) {
     }
 
     return true;
+}
+bool csx730_stat(const char ** path, inode_t * inode) {
+    inode_t * found = get_inode(path, __global.table);
+    if (found != NULL) {
+        memcpy(inode, found, sizeof(inode_t));
+        return true;
+    }
+    return false;
 }
