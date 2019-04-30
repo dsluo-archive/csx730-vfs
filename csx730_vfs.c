@@ -208,6 +208,12 @@ bool csx730_close(fd_t fd) {
     return true;
 }
 
-bool csx730_seek(fd_t fd, size_t offset);
+bool csx730_seek(fd_t fd, size_t offset) {
+    file_t * file = get_file_fd(fd);
+    if (file == NULL)
+        return false;
+    file->offset = offset;
+    return true;
+}
 ssize_t csx730_read(fd_t fd, void * buf, size_t len);
 ssize_t csx730_write(fd_t fd, void * buf, size_t len);
