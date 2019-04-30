@@ -133,4 +133,6 @@ void basename(const char **path, const char name[]);
  */
 size_t get_free_data_block(size_t min_size, size_t ino);
 
+file_t * get_file_fd(fd_t fd);
+
 #endif

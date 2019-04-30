@@ -176,10 +176,10 @@ bool csx730_stat(const char ** path, inode_t * inode) {
 }
 
 bool csx730_fstat(fd_t fd, inode_t * inode) {
-    for (file_t * file = __global.files_head; file != NULL; file=file->next)
-        if (file->fd == fd) {
-            memcpy(inode, file->inode, sizeof(inode_t));
-            return true;
-        }
+    file_t * file = get_file_fd(fd);
+    if (file != NULL) {
+        memcpy(inode, file->inode, sizeof(inode_t));
+        return true;
+    }
     return false;
 }

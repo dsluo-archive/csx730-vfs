@@ -160,3 +160,10 @@ size_t get_free_data_block(size_t min_size, size_t ino) {
     free(data_blocks);
     return offset;
 }
+
+file_t * get_file_fd(fd_t fd) {
+    for (file_t * file = __global.files_head; file != NULL; file=file->next)
+        if (file->fd == fd)
+            return file;
+    return NULL;
+}
