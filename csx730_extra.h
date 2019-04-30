@@ -1,4 +1,6 @@
 #include "csx730_ioctl.h"
+#include "csx730_meta.h"
+#include "csx730_vfs.h"
 
 #ifndef CSX730_EXTRA_H
 #define CSX730_EXTRA_H
@@ -46,4 +48,13 @@ inode_t * allocate_inode(inode_t table[], size_t table_size);
 const char ** dirname(const char ** path);
 void free_dirname(const char ** path);
 void basename(const char **path, const char name[]);
+
+/**
+ * @param min_size      minimum number of blocks to allocate.
+ * @param table         inode table
+ * @param table_size    size of inode table
+ * @return free block number
+ */
+size_t get_free_data_block(disk_t * disk, size_t min_size, inode_t table[], size_t table_size, size_t meta_blocks, size_t ino);
+
 #endif

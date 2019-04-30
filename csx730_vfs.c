@@ -9,7 +9,9 @@
 struct {
     disk_t disk;
     inode_t * table; // root is always table[0], but inode #1
-    size_t table_size;
+    size_t meta_blocks; // number of blocks for metadata (superblock + all inodes)
+    size_t inode_count;
+    bool initialized;
 } __global;
 
 bool csx730_vfs_init(const char * disk_image, size_t size) {
@@ -19,21 +21,20 @@ bool csx730_vfs_init(const char * disk_image, size_t size) {
     SUCCESS(csx730_ioctl_open(&__global.disk, disk_image, size));
 
     // initialize inode table.
-    size_t meta_blocks = size * INODE_BLOCK_RATIO + (size * INODE_BLOCK_RATIO == 0 ? 1 : 0); // at least 1 block allocated for metadata
-    size_t inode_space = meta_blocks * DISK_BLOCK_SIZE - sizeof(superblock_t); // inodes use up everything superblock doesn't
-    size_t inode_count = inode_space / sizeof(inode_t);
+    __global.meta_blocks = size * INODE_BLOCK_RATIO + (size * INODE_BLOCK_RATIO == 0 ? 1 : 0); // at least 1 block allocated for metadata
+    size_t inode_space = __global.meta_blocks * DISK_BLOCK_SIZE - sizeof(superblock_t); // inodes use up everything superblock doesn't
+    __global.inode_count = inode_space / sizeof(inode_t);
 
     // make sure we have enough inodes to cover all the data blocks.
-    while (inode_count < size - meta_blocks) {
-        meta_blocks++;
-        inode_space = meta_blocks * DISK_BLOCK_SIZE - sizeof(superblock_t);
-        inode_count = inode_space / sizeof(inode_t);
+    while (__global.inode_count < size - __global.meta_blocks) {
+        __global.meta_blocks++;
+        inode_space = __global.meta_blocks * DISK_BLOCK_SIZE - sizeof(superblock_t);
+        __global.inode_count = inode_space / sizeof(inode_t);
     }
 
-    inode_space = inode_count * sizeof(inode_t); // trim off extra space not used
+    inode_space = __global.inode_count * sizeof(inode_t); // trim off extra space not used
 
-    __global.table = calloc(inode_count, sizeof(inode_t));
-    __global.table_size = inode_count;
+    __global.table = calloc(__global.inode_count, sizeof(inode_t));
 
     superblock_t superblock;
     bool init = disk_read(&__global.disk, 0, sizeof(superblock_t), (void *) &superblock);
@@ -68,6 +69,40 @@ bool csx730_vfs_init(const char * disk_image, size_t size) {
         // already initialized; restore from disk.
         SUCCESS(disk_read(&__global.disk, sizeof(superblock_t), inode_space, __global.table));
     }
+
+    return true;
+}
+
+bool csx730_creat(const char ** path, bool dir) {
+    inode_t * inode = get_inode(path, __global.table);
+
+    if (inode != NULL)
+        return false;
+    
+    const char ** parent_path = dirname(path);
+    inode_t * parent = get_inode(parent_path, __global.table);
+    free_dirname(parent_path);
+
+    if (parent == NULL)
+        return false;
+
+    inode_t * new_inode = allocate_inode(__global.table, __global.inode_count);
+
+    new_inode->dir = dir;
+    basename(path, new_inode->name);
+
+    if (parent->child != NULL_INODE) {
+        inode_t * next = __global.table + parent->child - 1;
+        while (next->next != NULL_INODE)
+            next = __global.table + next->next - 1;
+        next->next = new_inode->ino;
+    } else {
+        parent->child = new_inode->ino;
+    }
+
+    new_inode->bno = get_free_data_block(&__global.disk, 1, __global.table, __global.inode_count, __global.meta_blocks, new_inode->ino);
+
+    SUCCESS(disk_write(&__global.disk, sizeof(superblock_t), __global.inode_count * sizeof(inode_t), __global.table));
 
     return true;
 }

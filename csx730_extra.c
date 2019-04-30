@@ -127,4 +127,30 @@ void basename(const char ** path, const char name[]) {
     
     memcpy((void *) name, path[pathlen - 1], strlen(path[pathlen - 1]));
 }
+
+size_t get_free_data_block(disk_t * disk, size_t min_size, inode_t table[], size_t table_size, size_t meta_blocks, size_t ino) {
+    bool * data_blocks = calloc(disk->size - meta_blocks, sizeof(bool));
+
+    for (size_t i = 0; i < table_size; i++) {
+        inode_t * inode = table + i;
+        if (!inode->dir && inode->ino != NULL_INODE && inode->ino != ino) {
+            size_t block_count = inode->size > 0 ? ceil_div(inode->offset + inode->size, DISK_BLOCK_SIZE) : 1;
+            for (size_t j = inode->bno; j < inode->bno + block_count + 1; j++)
+                data_blocks[j] = true;
+        }
+    }
+
+    size_t offset = -1;
+
+    for (size_t i = 0, j = 0; i < disk->size - meta_blocks; i++) {
+        for (;data_blocks[i] && i < disk->size - meta_blocks; i++, j++);
+        for (;!data_blocks[i] && i < disk->size - meta_blocks; i++);
+        if (i - j >= min_size) {
+            offset = j;
+            break;
+        }
+    }
+
+    free(data_blocks);
+    return offset;
 }
