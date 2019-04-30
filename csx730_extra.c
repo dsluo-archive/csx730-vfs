@@ -125,5 +125,6 @@ void basename(const char ** path, const char name[]) {
     for (const char ** i = path; *i != NULL; i++)
         pathlen++;
     
-    strcpy((char *) name, path[pathlen - 1]);
+    memcpy((void *) name, path[pathlen - 1], strlen(path[pathlen - 1]));
+}
 }
