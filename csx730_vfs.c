@@ -7,17 +7,6 @@
 
 #define INODE_BLOCK_RATIO 1/100 // inodes occupy 1% of blocks
 
-struct {
-    disk_t disk;
-    inode_t * table; // root is always table[0], but inode #1
-    size_t meta_blocks; // number of blocks for metadata (superblock + all inodes)
-    size_t inode_count;
-    bool initialized;
-    file_t * files_head;
-    file_t * files_tail;
-    fd_t next_fd;
-} __global;
-
 void cleanup(void) {
     free(__global.table);
 }
@@ -52,14 +41,14 @@ bool csx730_vfs_init(const char * disk_image, size_t size) {
     __global.table = calloc(__global.inode_count, sizeof(inode_t));
 
     superblock_t superblock;
-    bool init = disk_read(&__global.disk, 0, sizeof(superblock_t), (void *) &superblock);
+    bool init = disk_read(0, sizeof(superblock_t), (void *) &superblock);
 
     if (!init || superblock.magic != 0xDEADBEEF) {
         // new disk image; initalize new.
         superblock.magic = 0xDEADBEEF;
         superblock.root = 0;
 
-        SUCCESS(disk_write(&__global.disk, 0, sizeof(superblock_t), (void *) &superblock));
+        SUCCESS(disk_write(0, sizeof(superblock_t), (void *) &superblock));
 
         // init root inode
         inode_t root = {
@@ -79,35 +68,35 @@ bool csx730_vfs_init(const char * disk_image, size_t size) {
 
         memcpy(__global.table, &root, sizeof(inode_t));
 
-        SUCCESS(disk_write(&__global.disk, sizeof(superblock_t), inode_space, __global.table));
+        SUCCESS(disk_write(sizeof(superblock_t), inode_space, __global.table));
     } else {
         // already initialized; restore from disk.
-        SUCCESS(disk_read(&__global.disk, sizeof(superblock_t), inode_space, __global.table));
+        SUCCESS(disk_read(sizeof(superblock_t), inode_space, __global.table));
     }
 
     return true;
 }
 
 bool csx730_creat(const char ** path, bool dir) {
-    inode_t * inode = get_inode(path, __global.table);
+    inode_t * inode = get_inode(path);
 
     if (inode != NULL)
         return false;
     
     const char ** parent_path = dirname(path);
-    inode_t * parent = get_inode(parent_path, __global.table);
+    inode_t * parent = get_inode(parent_path);
     free_dirname(parent_path);
 
     if (parent == NULL)
         return false;
 
-    inode_t * new_inode = allocate_inode(__global.table, __global.inode_count);
+    inode_t * new_inode = allocate_inode();
 
     new_inode->dir = dir;
     basename(path, new_inode->name);
 
     if (parent->child != NULL_INODE) {
-        inode_t * next = get_inode_ino(parent->child, __global.table);
+        inode_t * next = get_inode_ino(parent->child);
         while (next->next != NULL_INODE)
             next = __global.table + next->next - 1;
         next->next = new_inode->ino;
@@ -116,15 +105,15 @@ bool csx730_creat(const char ** path, bool dir) {
         parent->child = new_inode->ino;
     }
 
-    new_inode->bno = get_free_data_block(&__global.disk, 1, __global.table, __global.inode_count, __global.meta_blocks, new_inode->ino);
+    new_inode->bno = get_free_data_block(1, new_inode->ino);
 
-    SUCCESS(disk_write(&__global.disk, sizeof(superblock_t), __global.inode_count * sizeof(inode_t), __global.table));
+    SUCCESS(disk_write(sizeof(superblock_t), __global.inode_count * sizeof(inode_t), __global.table));
 
     return true;
 }
 
 fd_t csx730_open(const char ** path) {
-    inode_t * inode = get_inode(path, __global.table);
+    inode_t * inode = get_inode(path);
     if (inode == NULL)
         return -1;
 
@@ -147,16 +136,16 @@ fd_t csx730_open(const char ** path) {
 }
 
 bool csx730_unlink(const char ** path) {
-    inode_t * inode = get_inode(path, __global.table);
+    inode_t * inode = get_inode(path);
     if (inode == NULL) 
         return false;
 
     const char ** parent_path = dirname(path); 
-    inode_t * parent = get_inode(parent_path, __global.table);
+    inode_t * parent = get_inode(parent_path);
     free_dirname(parent_path);
 
-    inode_t * prev = get_inode_ino(inode->prev, __global.table);
-    inode_t * next = get_inode_ino(inode->next, __global.table);
+    inode_t * prev = get_inode_ino(inode->prev);
+    inode_t * next = get_inode_ino(inode->next);
 
     if (parent->child == inode->ino) // if this is head of directory list
         parent->child = next != NULL ? next->ino : NULL_INODE;
@@ -176,7 +165,7 @@ bool csx730_unlink(const char ** path) {
 }
 
 bool csx730_stat(const char ** path, inode_t * inode) {
-    inode_t * found = get_inode(path, __global.table);
+    inode_t * found = get_inode(path);
     if (found != NULL) {
         memcpy(inode, found, sizeof(inode_t));
         return true;
