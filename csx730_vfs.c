@@ -145,7 +145,7 @@ bool csx730_unlink(const char ** path) {
         next->prev = NULL_INODE;
     }
 
-    memset(inode, 0, sizeof(inode));
+    memset(inode, 0, sizeof(inode_t));
 
     return true;
 }
