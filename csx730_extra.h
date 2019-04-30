@@ -90,7 +90,7 @@ inode_t * get_inode_ino(size_t ino);
  * 
  * @return the inode at @p path or @c NULL if it doesn't exist. 
  */
-inode_t * get_inode(const char ** path);
+inode_t * get_inode_path(const char ** path);
 
 /**
  * Initialize an inode for use.

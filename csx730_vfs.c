@@ -78,13 +78,13 @@ bool csx730_vfs_init(const char * disk_image, size_t size) {
 }
 
 bool csx730_creat(const char ** path, bool dir) {
-    inode_t * inode = get_inode(path);
+    inode_t * inode = get_inode_path(path);
 
     if (inode != NULL)
         return false;
     
     const char ** parent_path = dirname(path);
-    inode_t * parent = get_inode(parent_path);
+    inode_t * parent = get_inode_path(parent_path);
     free_dirname(parent_path);
 
     if (parent == NULL)
@@ -113,7 +113,7 @@ bool csx730_creat(const char ** path, bool dir) {
 }
 
 fd_t csx730_open(const char ** path) {
-    inode_t * inode = get_inode(path);
+    inode_t * inode = get_inode_path(path);
     if (inode == NULL)
         return -1;
 
@@ -136,12 +136,12 @@ fd_t csx730_open(const char ** path) {
 }
 
 bool csx730_unlink(const char ** path) {
-    inode_t * inode = get_inode(path);
+    inode_t * inode = get_inode_path(path);
     if (inode == NULL) 
         return false;
 
     const char ** parent_path = dirname(path); 
-    inode_t * parent = get_inode(parent_path);
+    inode_t * parent = get_inode_path(parent_path);
     free_dirname(parent_path);
 
     inode_t * prev = get_inode_ino(inode->prev);
@@ -165,7 +165,7 @@ bool csx730_unlink(const char ** path) {
 }
 
 bool csx730_stat(const char ** path, inode_t * inode) {
-    inode_t * found = get_inode(path);
+    inode_t * found = get_inode_path(path);
     if (found != NULL) {
         memcpy(inode, found, sizeof(inode_t));
         return true;
