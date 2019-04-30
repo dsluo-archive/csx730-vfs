@@ -4,7 +4,7 @@
 bool disk_read(disk_t * disk, size_t offset, size_t len, void * data) {
     const size_t block_num = offset / DISK_BLOCK_SIZE; 
     const size_t block_offset = offset % DISK_BLOCK_SIZE;
-    const size_t block_count = ceil_div(block_offset + len, DISK_BLOCK_SIZE);
+    const size_t block_count = CEIL_DIV(block_offset + len, DISK_BLOCK_SIZE);
 
     const size_t data_offset = DISK_BLOCK_SIZE - block_offset;
 
@@ -26,7 +26,7 @@ bool disk_read(disk_t * disk, size_t offset, size_t len, void * data) {
 bool disk_write(disk_t * disk, size_t offset, size_t len, void * data) {
     const size_t block_num = offset / DISK_BLOCK_SIZE; 
     const size_t block_offset = offset % DISK_BLOCK_SIZE;
-    const size_t block_count = ceil_div(block_offset + len, DISK_BLOCK_SIZE);
+    const size_t block_count = CEIL_DIV(block_offset + len, DISK_BLOCK_SIZE);
 
     const size_t data_offset = DISK_BLOCK_SIZE - block_offset;
 
@@ -140,7 +140,7 @@ size_t get_free_data_block(disk_t * disk, size_t min_size, inode_t table[], size
     for (size_t i = 0; i < table_size; i++) {
         inode_t * inode = table + i;
         if (!inode->dir && inode->ino != NULL_INODE && inode->ino != ino) {
-            size_t block_count = inode->size > 0 ? ceil_div(inode->offset + inode->size, DISK_BLOCK_SIZE) : 1;
+            size_t block_count = inode->size > 0 ? CEIL_DIV(inode->offset + inode->size, DISK_BLOCK_SIZE) : 1;
             for (size_t j = inode->bno; j < inode->bno + block_count + 1; j++)
                 data_blocks[j] = true;
         }
