@@ -111,7 +111,7 @@ const char ** dirname(const char * path[]) {
         *j = malloc(strlen(*i));
         memcpy((void*) *j, *i, strlen(*i));
     }
-    parent[pathlen] = NULL;
+    parent[pathlen - 1] = NULL;
 
     return parent;
 }
