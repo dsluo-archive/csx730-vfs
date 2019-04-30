@@ -47,6 +47,12 @@ bool disk_write(disk_t * disk, size_t offset, size_t len, void * data) {
     return true;
 }
 
+inode_t * get_inode_ino(size_t ino, inode_t table[]) {
+    if (ino == NULL_INODE)
+        return NULL;
+    return table + ino - 1;
+}
+
 inode_t * get_inode(const char ** path, inode_t table[]) {
     inode_t * curr = table;
 
@@ -59,11 +65,11 @@ inode_t * get_inode(const char ** path, inode_t table[]) {
         if (curr->child == NULL_INODE)
             return NULL;
 
-        inode_t * next = &table[curr->child - 1];
+        inode_t * next = get_inode_ino(curr->child, table);
         while (strcmp(next->name, *pathname)) {
             if (next->next == NULL_INODE)
                 return NULL;
-            next = &table[next->next - 1];
+            next = get_inode_ino(next->next, table);
         }
         curr = next;
         pathname++;

@@ -104,7 +104,7 @@ bool csx730_creat(const char ** path, bool dir) {
     basename(path, new_inode->name);
 
     if (parent->child != NULL_INODE) {
-        inode_t * next = __global.table + parent->child - 1;
+        inode_t * next = get_inode_ino(parent->child, __global.table);
         while (next->next != NULL_INODE)
             next = __global.table + next->next - 1;
         next->next = new_inode->ino;
