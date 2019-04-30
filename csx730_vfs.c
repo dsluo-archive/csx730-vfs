@@ -230,3 +230,19 @@ ssize_t csx730_read(fd_t fd, void * buf, size_t len) {
 
     return success ? len : -1;
 }
+
+bool csx730_stat_next(fd_t fd, inode_t * inode) {
+    file_t * file = get_file_fd(fd);
+    if (file == NULL)
+        return false;
+    if (file->next == NULL)
+        return false;
+
+    inode_t * next = get_inode_ino(file->inode->next);
+    if (next == NULL)
+        return false;
+
+    SUCCESS(memcpy(inode, next, sizeof(inode_t)));
+    return true;
+}
+
