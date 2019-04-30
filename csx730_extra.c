@@ -109,7 +109,7 @@ const char ** dirname(const char * path[]) {
     const char ** parent = calloc(pathlen, sizeof(const char *));
     for (const char ** i = path, ** j = parent; *i != NULL; i++, j++) {
         *j = malloc(strlen(*i));
-        memcpy((void*) *j, *i, strlen(*i));
+        memcpy((void*) *j, *i, strlen(*i) + 1);
     }
     parent[pathlen - 1] = NULL;
 
