@@ -68,7 +68,11 @@ bool disk_write(size_t offset, size_t len, void * data);
  * @return @c true if successful read; @c false otherwise
  */
 bool disk_read(size_t offset, size_t len, void * data);
-bool disk_read(disk_t * disk, size_t offset, size_t len, void * data);
+
+/**
+ * Defrags the disk to make more space.
+ */ 
+bool disk_defrag();
 
 // todo: there should probably be a const somewhere in this header
 /**
