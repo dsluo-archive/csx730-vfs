@@ -183,3 +183,28 @@ bool csx730_fstat(fd_t fd, inode_t * inode) {
     }
     return false;
 }
+
+bool csx730_close(fd_t fd) {
+    file_t * file = get_file_fd(fd);
+    
+    if (file == NULL)
+        return false;
+
+    if (__global.files_head == file)
+        __global.files_head = file->next;
+    if (__global.files_tail == file)
+        __global.files_tail = file->prev;
+
+    if (file->prev)
+        file->prev = file->next;
+    if (file->next)
+        file->next = file->prev;
+    
+    free(file);
+
+    return true;
+}
+
+bool csx730_seek(fd_t fd, size_t offset);
+ssize_t csx730_read(fd_t fd, void * buf, size_t len);
+ssize_t csx730_write(fd_t fd, void * buf, size_t len);
