@@ -246,3 +246,16 @@ bool csx730_stat_next(fd_t fd, inode_t * inode) {
     return true;
 }
 
+bool csx730_stat_child(fd_t fd, inode_t * buf) {
+    file_t * file = get_file_fd(fd);
+    if (file == NULL)
+        return false;
+
+    inode_t * child = get_inode_ino(file->inode->child);
+    if (child == NULL)
+        return false;
+    
+    SUCCESS(memcpy(buf, child, sizeof(inode_t)));
+    return true;
+}
+
