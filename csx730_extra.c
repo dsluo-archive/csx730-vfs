@@ -131,7 +131,7 @@ void basename(const char ** path, const char name[]) {
     for (const char ** i = path; *i != NULL; i++)
         pathlen++;
     
-    memcpy((void *) name, path[pathlen - 1], strlen(path[pathlen - 1]));
+    memcpy((void *) name, path[pathlen - 1], strlen(path[pathlen - 1]) + 1);
 }
 
 size_t get_free_data_block(disk_t * disk, size_t min_size, inode_t table[], size_t table_size, size_t meta_blocks, size_t ino) {
