@@ -13,6 +13,9 @@ struct {
     size_t meta_blocks; // number of blocks for metadata (superblock + all inodes)
     size_t inode_count;
     bool initialized;
+    file_t * files_head;
+    file_t * files_tail;
+    fd_t next_fd;
 } __global;
 
 void cleanup(void) {
@@ -120,7 +123,29 @@ bool csx730_creat(const char ** path, bool dir) {
     return true;
 }
 
-fd_t csx730_open(const char ** path);
+fd_t csx730_open(const char ** path) {
+    inode_t * inode = get_inode(path, __global.table);
+    if (inode == NULL)
+        return -1;
+
+    file_t * file = malloc(sizeof(file_t));
+    file->fd = __global.next_fd++;
+    file->inode = inode;
+    file->offset = 0;
+    file->open = true;
+    file->next = NULL;
+ 
+    if (__global.files_head == NULL) {
+        __global.files_head = file;
+    } else {
+        __global.files_tail->next = file;
+    }
+
+    __global.files_tail = file;
+
+    return file->fd;    
+}
+
 bool csx730_unlink(const char ** path) {
     inode_t * inode = get_inode(path, __global.table);
     if (inode == NULL) 
