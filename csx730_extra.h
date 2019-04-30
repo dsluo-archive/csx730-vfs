@@ -10,6 +10,14 @@
 #define SUCCESS(call) if (!(call)) return false
 #define VOID_MATH(math_stuff) (void *)((char *) math_stuff)
 
+typedef struct file {
+    inode_t * inode;
+    fd_t fd;
+    size_t offset;
+    bool open;
+    struct file * next;
+} file_t;
+
 struct {
     disk_t disk;
     inode_t * table; // root is always table[0], but inode #1
