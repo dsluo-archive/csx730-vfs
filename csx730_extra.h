@@ -45,6 +45,7 @@ bool disk_write(disk_t * disk, size_t offset, size_t len, void * data);
 bool disk_read(disk_t * disk, size_t offset, size_t len, void * data);
 
 // todo: there should probably be a const somewhere in this header
+inode_t * get_inode_ino(size_t ino, inode_t table[]);
 inode_t * get_inode(const char ** path, inode_t table[]);
 inode_t * allocate_inode(inode_t table[], size_t table_size);
 const char ** dirname(const char ** path);
