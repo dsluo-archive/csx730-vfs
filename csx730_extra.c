@@ -1,7 +1,6 @@
 #include "csx730_extra.h"
 #include <string.h>
 
-
 bool disk_read(disk_t * disk, size_t offset, size_t len, void * data) {
     const size_t block_num = offset / DISK_BLOCK_SIZE; 
     const size_t block_offset = offset % DISK_BLOCK_SIZE;
@@ -55,22 +54,25 @@ inode_t * get_inode(const char ** path, inode_t table[]) {
         return curr;
     }
 
-    const char * filename = path[0];
-    while (curr->dir && filename != NULL) {
+    const char ** pathname = path;
+    while (curr->dir && *pathname != NULL) {
         if (curr->child == NULL_INODE)
             return NULL;
 
         inode_t * next = &table[curr->child - 1];
-        while (strcmp(next->name, filename)) {
+        while (strcmp(next->name, *pathname)) {
             if (next->next == NULL_INODE)
                 return NULL;
             next = &table[next->next - 1];
         }
         curr = next;
-        filename++;
+        pathname++;
     }
 
-    return !strcmp(curr->name, filename) ? curr : NULL;
+    const char name[256] = "\0";
+    basename(path, name);
+
+    return !strcmp(curr->name, name) ? curr : NULL;
 }
 
 inode_t * allocate_inode(inode_t table[], size_t table_size) {
