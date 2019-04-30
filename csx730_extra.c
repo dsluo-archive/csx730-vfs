@@ -1,7 +1,7 @@
 #include "csx730_extra.h"
 #include <string.h>
 
-bool disk_read(disk_t * disk, size_t offset, size_t len, void * data) {
+bool disk_read(size_t offset, size_t len, void * data) {
     const size_t block_num = offset / DISK_BLOCK_SIZE; 
     const size_t block_offset = offset % DISK_BLOCK_SIZE;
     const size_t block_count = CEIL_DIV(block_offset + len, DISK_BLOCK_SIZE);
@@ -10,7 +10,7 @@ bool disk_read(disk_t * disk, size_t offset, size_t len, void * data) {
 
     char buffer[DISK_BLOCK_SIZE];
     for (size_t i = 0; i < block_count; i++) {
-        SUCCESS(csx730_ioctl_get(disk, block_num + i, buffer));
+        SUCCESS(csx730_ioctl_get(&__global.disk, block_num + i, buffer));
         if (i == 0) {
             SUCCESS(memcpy(data, buffer + block_offset, MIN(data_offset, len)));
         } else if (i == block_count - 1) {
@@ -23,7 +23,7 @@ bool disk_read(disk_t * disk, size_t offset, size_t len, void * data) {
     return true;
 }
 
-bool disk_write(disk_t * disk, size_t offset, size_t len, void * data) {
+bool disk_write(size_t offset, size_t len, void * data) {
     const size_t block_num = offset / DISK_BLOCK_SIZE; 
     const size_t block_offset = offset % DISK_BLOCK_SIZE;
     const size_t block_count = CEIL_DIV(block_offset + len, DISK_BLOCK_SIZE);
@@ -33,7 +33,7 @@ bool disk_write(disk_t * disk, size_t offset, size_t len, void * data) {
     char buffer[DISK_BLOCK_SIZE];
     for (size_t i = 0; i < block_count; i++) {
         // todo: do we care if this fails?
-        csx730_ioctl_get(disk, block_num + i, buffer);
+        csx730_ioctl_get(&__global.disk, block_num + i, buffer);
         if (i == 0) {
             SUCCESS(memcpy(buffer + block_offset, data, MIN(data_offset, len)));
         } else if (i == block_count - 1) {
@@ -41,20 +41,20 @@ bool disk_write(disk_t * disk, size_t offset, size_t len, void * data) {
         } else {
             SUCCESS(memcpy(buffer, (char *) data + data_offset + (i - 1) * DISK_BLOCK_SIZE, DISK_BLOCK_SIZE));
         }
-        SUCCESS(csx730_ioctl_put(disk, block_num + i, buffer));
+        SUCCESS(csx730_ioctl_put(&__global.disk, block_num + i, buffer));
     }
     
     return true;
 }
 
-inode_t * get_inode_ino(size_t ino, inode_t table[]) {
+inode_t * get_inode_ino(size_t ino) {
     if (ino == NULL_INODE)
         return NULL;
-    return table + ino - 1;
+    return __global.table + ino - 1;
 }
 
-inode_t * get_inode(const char ** path, inode_t table[]) {
-    inode_t * curr = table;
+inode_t * get_inode(const char ** path) {
+    inode_t * curr = __global.table;
 
     if (!strcmp(path[0], "/") && path[1] == NULL) {
         return curr;
@@ -65,11 +65,11 @@ inode_t * get_inode(const char ** path, inode_t table[]) {
         if (curr->child == NULL_INODE)
             return NULL;
 
-        inode_t * next = get_inode_ino(curr->child, table);
+        inode_t * next = get_inode_ino(curr->child);
         while (strcmp(next->name, *pathname)) {
             if (next->next == NULL_INODE)
                 return NULL;
-            next = get_inode_ino(next->next, table);
+            next = get_inode_ino(next->next);
         }
         curr = next;
         pathname++;
@@ -81,11 +81,11 @@ inode_t * get_inode(const char ** path, inode_t table[]) {
     return !strcmp(curr->name, name) ? curr : NULL;
 }
 
-inode_t * allocate_inode(inode_t table[], size_t table_size) {
-    for (size_t i = 0; i < table_size; i++)
-        if (table[i].ino == NULL_INODE) {
-            table[i].ino = i + 1;
-            return &table[i];
+inode_t * allocate_inode() {
+    for (size_t i = 0; i < __global.inode_count; i++)
+        if (__global.table[i].ino == NULL_INODE) {
+            __global.table[i].ino = i + 1;
+            return &__global.table[i];
         }
     return NULL;
 }
@@ -134,11 +134,11 @@ void basename(const char ** path, const char name[]) {
     memcpy((void *) name, path[pathlen - 1], strlen(path[pathlen - 1]) + 1);
 }
 
-size_t get_free_data_block(disk_t * disk, size_t min_size, inode_t table[], size_t table_size, size_t meta_blocks, size_t ino) {
-    bool * data_blocks = calloc(disk->size - meta_blocks, sizeof(bool));
+size_t get_free_data_block(size_t min_size, size_t ino) {
+    bool * data_blocks = calloc(__global.disk.size - __global.meta_blocks, sizeof(bool));
 
-    for (size_t i = 0; i < table_size; i++) {
-        inode_t * inode = table + i;
+    for (size_t i = 0; i < __global.inode_count; i++) {
+        inode_t * inode = __global.table + i;
         if (!inode->dir && inode->ino != NULL_INODE && inode->ino != ino) {
             size_t block_count = inode->size > 0 ? CEIL_DIV(inode->offset + inode->size, DISK_BLOCK_SIZE) : 1;
             for (size_t j = inode->bno; j < inode->bno + block_count + 1; j++)
@@ -148,9 +148,9 @@ size_t get_free_data_block(disk_t * disk, size_t min_size, inode_t table[], size
 
     size_t offset = -1;
 
-    for (size_t i = 0, j = 0; i < disk->size - meta_blocks; i++) {
-        for (;data_blocks[i] && i < disk->size - meta_blocks; i++, j++);
-        for (;!data_blocks[i] && i < disk->size - meta_blocks; i++);
+    for (size_t i = 0, j = 0; i < __global.disk.size - __global.meta_blocks; i++) {
+        for (;data_blocks[i] && i < __global.disk.size - __global.meta_blocks; i++, j++);
+        for (;!data_blocks[i] && i < __global.disk.size - __global.meta_blocks; i++);
         if (i - j >= min_size) {
             offset = j;
             break;
