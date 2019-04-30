@@ -126,8 +126,10 @@ fd_t csx730_open(const char ** path) {
  
     if (__global.files_head == NULL) {
         __global.files_head = file;
+        file->prev = NULL;
     } else {
         __global.files_tail->next = file;
+        file->prev = __global.files_tail;
     }
 
     __global.files_tail = file;

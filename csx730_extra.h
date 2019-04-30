@@ -16,6 +16,7 @@ typedef struct file {
     size_t offset;
     bool open;
     struct file * next;
+    struct file * prev;
 } file_t;
 
 struct {
