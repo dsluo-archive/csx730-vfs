@@ -108,6 +108,7 @@ bool csx730_creat(const char ** path, bool dir) {
         while (next->next != NULL_INODE)
             next = __global.table + next->next - 1;
         next->next = new_inode->ino;
+        new_inode->prev = next->ino;
     } else {
         parent->child = new_inode->ino;
     }
