@@ -5,6 +5,8 @@
 #ifndef CSX730_EXTRA_H
 #define CSX730_EXTRA_H
 
+#define NULL_INODE 0
+
 #define SUCCESS(call) if (!(call)) return false
 #define VOID_MATH(math_stuff) (void *)((char *) math_stuff)
 
