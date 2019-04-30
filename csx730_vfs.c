@@ -3,6 +3,7 @@
 #include <semaphore.h>
 #include "csx730_extra.h"
 #include <string.h>
+#include <stdlib.h>
 
 #define INODE_BLOCK_RATIO 1/100 // inodes occupy 1% of blocks
 
@@ -14,7 +15,18 @@ struct {
     bool initialized;
 } __global;
 
+void cleanup(void) {
+    free(__global.table);
+}
+
 bool csx730_vfs_init(const char * disk_image, size_t size) {
+
+    if (__global.initialized)
+        return false;
+    else {
+        __global.initialized = true;
+        SUCCESS(!atexit(&cleanup));
+    }
 
     // TODO: calculate space to reserve for inodes + superblock here?
 
