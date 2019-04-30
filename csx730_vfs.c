@@ -125,7 +125,6 @@ fd_t csx730_open(const char ** path) {
     file->fd = __global.next_fd++;
     file->inode = inode;
     file->offset = 0;
-    file->open = true;
     file->next = NULL;
  
     if (__global.files_head == NULL) {

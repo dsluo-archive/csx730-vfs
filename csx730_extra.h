@@ -14,7 +14,6 @@ typedef struct file {
     inode_t * inode;
     fd_t fd;
     size_t offset;
-    bool open;
     struct file * next;
     struct file * prev;
 } file_t;
