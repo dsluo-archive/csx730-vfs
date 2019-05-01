@@ -128,7 +128,8 @@ bool csx730_creat(const char **path, bool dir)
         parent->child = new_inode->ino;
     }
 
-    new_inode->bno = get_free_data_block(1, new_inode->ino);
+    if (!dir)
+        new_inode->bno = get_free_data_block(1, new_inode->ino);
 
     SUCCESS(disk_write(sizeof(superblock_t), __global.inode_count * sizeof(inode_t), __global.table));
 
