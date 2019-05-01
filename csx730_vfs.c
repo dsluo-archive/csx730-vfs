@@ -16,8 +16,11 @@ void cleanup(void)
 {
     free(__global.table);
 
-    for (file_t *file = __global.files_head->next; file != __global.files_tail && file != NULL; file = file->next)
-        free(file->prev);
+    file_t * file;
+    file_t * next;
+    for (file = __global.files_head, next = file->next; file != __global.files_tail && file != NULL; file = next, next = file->next) {
+        free(file);
+    }
     free(__global.files_tail);
 }
 
