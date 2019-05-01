@@ -228,11 +228,26 @@ ssize_t csx730_read(fd_t fd, void * buf, size_t len) {
         return -1;
 
     // disallow reading beyond file end
-    if (len + file->offset > file->inode->size)
-        return -1;
+    // if (len + file->offset > file->inode->size)
+    //     return -1;
 
     size_t disk_offset = file->inode->bno * DISK_BLOCK_SIZE + file->inode->offset + file->offset;
     bool success = disk_read(disk_offset, len, buf);
+    file->offset += len;
+
+    return success ? len : -1;
+}
+
+ssize_t csx730_write(fd_t fd, void * buf, size_t len) {
+    file_t * file = get_file_fd(fd);
+    if (file == NULL)
+        return -1;
+    // if (len + file->offset > file->inode->size)
+    //     return -1; // todo: extend inode
+
+    size_t disk_offset = file->inode->bno * DISK_BLOCK_SIZE + file->inode->offset + file->offset;
+    bool success = disk_write(disk_offset, len, buf);
+    file->offset += len;
 
     return success ? len : -1;
 }
