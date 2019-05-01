@@ -6,35 +6,64 @@
 #include <stdio.h>
 #include "csx730_extra.h"
 
-int main() {
+int main()
+{
 
   // your test code here
 
-  disk_t disk;
-  const char * path = "/home/dsluo/csx730-vfs/vdisk.img";
-  size_t size = 3;
+  // disk_t disk;
+  // const char * path = "/home/dsluo/csx730-vfs/vdisk.img";
+  // size_t size = 20;
 
-  csx730_ioctl_open(&disk, path, size);
+  // initialize the file system
+  csx730_vfs_init("vdisk.img", 256);
 
-  char data[8192];
-  char * numbers = "0123456789";
+  // setup paths for  /home/root/README.md
+  const char *home[] = {"home", NULL};
+  const char *home_root[] = {"home", "root", NULL};
+  const char *home_root_readme[] = {"home", "root", "README.md", NULL};
 
-  for (int i = 0; i < 8192; i++) {
-    data[i] = numbers[i%10];
-  }
+  // create directories and files
+  bool success;
+  success = csx730_creat(home, true);
+  success = csx730_creat(home_root, true);
+  success = csx730_creat(home_root_readme, false);
 
-  disk_write(&disk, 2048, 8192, data);
+  // open and write to the file
+  fd_t fd = csx730_open(home_root_readme);
+  const char *msg = "stuff";
+  ssize_t change;
+  change = csx730_write(fd, (void *)msg, strlen(msg));
 
-  memset(data, '\0', 8192);
+  // read from the file
+  char buffer[256];
+  success = csx730_seek(fd, 0);
+  change = csx730_read(fd, buffer, 5);
+  buffer[5] = '\0';
+  printf("%s\n", buffer);
 
-  disk_read(&disk, 2048, 8192, data);
+  // 2
 
-  // csx730_vfs_init(path, size);
+  // open /home/root
+  fd_t fd2 = csx730_open(home_root);
 
-  // inode_t inode;
+  // stat the file
+  inode_t inode;
+  csx730_fstat(fd2, &inode);
 
-  // const char * path2 = "/";
-  // csx730_stat(&path2, &inode);
+  if (inode.dir) {
+
+    printf("%s is a directory!\n", inode.name);
+    inode_t child;
+
+    if (csx730_stat_child(fd2, &child)) {
+      printf("first entry in dir is %s\n", child.name);
+    } else {
+      printf("dirctory is empty!\n");
+    } // if
+  } else {
+    printf("%s is a regular file!\n", inode.name);
+  } // if
 
   return 0;
 
