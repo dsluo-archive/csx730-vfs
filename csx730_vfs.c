@@ -4,8 +4,13 @@
 #include "csx730_extra.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define INODE_BLOCK_RATIO 1/100 // inodes occupy 1% of blocks
+#define PSTAT_FMT \
+    "Block I/O Stats:\n" \
+    "* gets [ count = %zu; sum = %Lf; min = %Lf; mean = %Lf; max = %Lf ]\n" \
+    "* puts [ count = %zu; sum = %Lf; min = %Lf; mean = %Lf; max = %Lf ]\n"
 
 void cleanup(void) {
     free(__global.table);
@@ -259,3 +264,13 @@ bool csx730_stat_child(fd_t fd, inode_t * buf) {
     return true;
 }
 
+
+void csx730_pstats() {
+    stat_t * gets = &__global.disk.gets;
+    val_t gets_mean = csx730_stat_mean(gets);
+    stat_t * puts = &__global.disk.puts;
+    val_t puts_mean = csx730_stat_mean(puts);
+    printf(PSTAT_FMT, 
+        gets->n, gets->sum, gets->min, gets_mean, gets->max,
+        puts->n, puts->sum, puts->min, puts_mean, puts->max);
+}
