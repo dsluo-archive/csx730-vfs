@@ -83,7 +83,7 @@ bool csx730_vfs_init(const char *disk_image, size_t size)
         // todo: idk how much this should be initialized for.
         // SUCCESS(sem_init(&root.sem, true, 1));
 
-        memcpy(__global.table, &root, sizeof(inode_t));
+        SUCCESS(memcpy(__global.table, &root, sizeof(inode_t)));
 
         SUCCESS(disk_write(sizeof(superblock_t), inode_space, __global.table));
     }
@@ -194,7 +194,7 @@ bool csx730_unlink(const char **path)
         next->prev = NULL_INODE;
     }
 
-    memset(inode, 0, sizeof(inode_t));
+    SUCCESS(memset(inode, 0, sizeof(inode_t)));
 
     return true;
 }
@@ -204,7 +204,7 @@ bool csx730_stat(const char **path, inode_t *inode)
     inode_t *found = get_inode_path(path);
     if (found != NULL)
     {
-        memcpy(inode, found, sizeof(inode_t));
+        SUCCESS(memcpy(inode, found, sizeof(inode_t)));
         return true;
     }
     return false;
@@ -215,7 +215,7 @@ bool csx730_fstat(fd_t fd, inode_t *inode)
     file_t *file = get_file_fd(fd);
     if (file != NULL)
     {
-        memcpy(inode, file->inode, sizeof(inode_t));
+        SUCCESS(memcpy(inode, file->inode, sizeof(inode_t)));
         return true;
     }
     return false;
