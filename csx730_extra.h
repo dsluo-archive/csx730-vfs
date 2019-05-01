@@ -5,31 +5,43 @@
 #ifndef CSX730_EXTRA_H
 #define CSX730_EXTRA_H
 
+/**
+ * Represents an unallocated inode.
+ */
 #define NULL_INODE 0
 
+/**
+ * Returns false if @p call is false; continues execution otherwise.
+ */
 #define SUCCESS(call) \
     if (!(call))      \
     return false
 
+/**
+ * Represents an open file.
+ */
 typedef struct file
 {
-    inode_t *inode;
-    fd_t fd;
-    size_t offset;
-    struct file *next;
-    struct file *prev;
+    inode_t *inode;     // file's inode
+    fd_t fd;            // file descriptor
+    size_t offset;      // current offset
+    struct file *next;  // next file in file list
+    struct file *prev;  // prev file in file list
 } file_t;
 
+/**
+ * Represents the global state of the disk. Can only use one disk at a time.
+ */
 struct
 {
-    disk_t disk;
+    disk_t disk;        // the disk
     inode_t *table;     // root is always table[0], but inode #1
     size_t meta_blocks; // number of blocks for metadata (superblock + all inodes)
-    size_t inode_count;
-    bool initialized;
-    file_t *files_head;
-    file_t *files_tail;
-    fd_t next_fd;
+    size_t inode_count; // number of inodes available.
+    bool initialized;   // if the disk has been initialized.
+    file_t *files_head; // head of file list
+    file_t *files_tail; // tail of file list
+    fd_t next_fd;       // file descriptor of next file to be opened.
 } __global;
 
 /**
