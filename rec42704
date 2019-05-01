@@ -1,0 +1,17 @@
+csx730-vfs/:
+total 108
+-rw-r--r-- 1 ugrad  5549 Apr 30 22:32 csx730_extra.c
+-rw-r--r-- 1 ugrad  4184 Apr 30 22:47 csx730_extra.h
+-rw-r--r-- 1 ugrad  2089 Apr 30 21:07 csx730_ioctl.h
+-rwxr-xr-x 1 ugrad  9933 Apr 30 21:07 csx730_ioctl.so
+-rw-r--r-- 1 ugrad  1146 Apr 30 21:07 csx730_meta.h
+-rw-r--r-- 1 ugrad  1683 Apr 30 21:07 csx730_stat.h
+-rwxr-xr-x 1 ugrad  9394 Apr 30 21:07 csx730_stat.so
+-rw-r--r-- 1 ugrad  8673 Apr 30 22:32 csx730_vfs.c
+-rw-r--r-- 1 ugrad  1970 Apr 30 22:32 csx730_vfs_driver.c
+-rw-r--r-- 1 ugrad  5720 Apr 30 21:07 csx730_vfs.h
+-rw-r--r-- 1 ugrad   933 Apr 30 22:34 Makefile
+-rw-r--r-- 1 ugrad 22361 Apr 30 21:07 README.md
+-rw-r--r-- 1 ugrad     0 Apr 30 22:47 rec42704
+-rw-r--r-- 1 ugrad  1515 Apr 30 22:47 SUBMISSION.md
+/home/ugrads/dluo/csx730-vfs/:/home/work/csx730
