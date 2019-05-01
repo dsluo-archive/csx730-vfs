@@ -31,3 +31,4 @@ clean:
 	$(RM) csx730_vfs_driver.o
 	$(RM) csx730_vfs_driver
 	$(RM) csx730_extra.o
+	$(RM) *.img
