@@ -125,6 +125,9 @@ fd_t csx730_open(const char ** path) {
     inode_t * inode = get_inode_path(path);
     if (inode == NULL)
         return -1;
+    
+    if (inode->dir)
+        return -1;
 
     file_t * file = malloc(sizeof(file_t));
     file->fd = __global.next_fd++;
