@@ -170,7 +170,7 @@ size_t get_free_data_block(size_t min_size, size_t ino)
         if (!inode->dir && inode->ino != NULL_INODE && inode->ino != ino)
         {
             size_t block_count = inode->size > 0 ? CEIL_DIV(inode->offset + inode->size, DISK_BLOCK_SIZE) : 1;
-            for (size_t j = inode->bno; j < inode->bno + block_count + 1; j++)
+            for (size_t j = inode->bno; j < inode->bno + block_count; j++)
                 data_blocks[j] = true;
         }
     }
@@ -179,10 +179,8 @@ size_t get_free_data_block(size_t min_size, size_t ino)
 
     for (size_t i = 0, j = 0; i < __global.disk.size - __global.meta_blocks; i++)
     {
-        for (; data_blocks[i] && i < __global.disk.size - __global.meta_blocks; i++, j++)
-            ;
-        for (; !data_blocks[i] && i < __global.disk.size - __global.meta_blocks; i++)
-            ;
+        for (; data_blocks[i] && i < __global.disk.size - __global.meta_blocks; i++, j++);
+        for (; !data_blocks[i] && i < __global.disk.size - __global.meta_blocks; i++);
         if (i - j >= min_size)
         {
             offset = j;
