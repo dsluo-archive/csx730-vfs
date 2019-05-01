@@ -111,6 +111,7 @@ bool csx730_creat(const char **path, bool dir)
         return false;
 
     inode_t *new_inode = allocate_inode();
+    new_inode->size = DISK_BLOCK_SIZE;
 
     new_inode->dir = dir;
     basename(path, new_inode->name);
