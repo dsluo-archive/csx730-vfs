@@ -53,7 +53,7 @@ inode_t * get_inode_ino(size_t ino) {
     return __global.table + ino - 1;
 }
 
-inode_t * get_inode(const char ** path) {
+inode_t * get_inode_path(const char ** path) {
     inode_t * curr = __global.table;
 
     if (!strcmp(path[0], "/") && path[1] == NULL) {
