@@ -7,25 +7,28 @@
 
 #define NULL_INODE 0
 
-#define SUCCESS(call) if (!(call)) return false
-#define VOID_MATH(math_stuff) (void *)((char *) math_stuff)
+#define SUCCESS(call) \
+    if (!(call))      \
+    return false
 
-typedef struct file {
-    inode_t * inode;
+typedef struct file
+{
+    inode_t *inode;
     fd_t fd;
     size_t offset;
-    struct file * next;
-    struct file * prev;
+    struct file *next;
+    struct file *prev;
 } file_t;
 
-struct {
+struct
+{
     disk_t disk;
-    inode_t * table; // root is always table[0], but inode #1
+    inode_t *table;     // root is always table[0], but inode #1
     size_t meta_blocks; // number of blocks for metadata (superblock + all inodes)
     size_t inode_count;
     bool initialized;
-    file_t * files_head;
-    file_t * files_tail;
+    file_t *files_head;
+    file_t *files_tail;
     fd_t next_fd;
 } __global;
 
@@ -36,8 +39,7 @@ struct {
  * @return the cieling of @c x / @c y
  */
 // https://stackoverflow.com/a/2745086
-#define CEIL_DIV(x, y) (1 + (((x) - 1) / (y)))
-
+#define CEIL_DIV(x, y) (1 + (((x)-1) / (y)))
 
 /**
  * Utility macro that returns the larger of the two arguments.
@@ -57,7 +59,7 @@ struct {
  * @param data      data to write.
  * @return @c true if successful write; @c false otherwise
  */
-bool disk_write(size_t offset, size_t len, void * data);
+bool disk_write(size_t offset, size_t len, void *data);
 
 /**
  * Allows for arbitrary read on a @c disk_t object.
@@ -67,11 +69,11 @@ bool disk_write(size_t offset, size_t len, void * data);
  * @param data      buffer to store data in.
  * @return @c true if successful read; @c false otherwise
  */
-bool disk_read(size_t offset, size_t len, void * data);
+bool disk_read(size_t offset, size_t len, void *data);
 
 /**
  * Defrags the disk to make more space.
- */ 
+ */
 bool disk_defrag();
 
 // todo: there should probably be a const somewhere in this header
@@ -81,7 +83,7 @@ bool disk_defrag();
  * @param ino       the inode number.
  * @return the inode with inode number @p ino, or @c NULL if not allocated.
  */
-inode_t * get_inode_ino(size_t ino);
+inode_t *get_inode_ino(size_t ino);
 
 /**
  * Get the inode by its path.
@@ -90,14 +92,14 @@ inode_t * get_inode_ino(size_t ino);
  * 
  * @return the inode at @p path or @c NULL if it doesn't exist. 
  */
-inode_t * get_inode_path(const char ** path);
+inode_t *get_inode_path(const char **path);
 
 /**
  * Initialize an inode for use.
  * 
  * @return an unused inode
  */
-inode_t * allocate_inode();
+inode_t *allocate_inode();
 
 /**
  * Gets the directory name of the current path.
@@ -108,14 +110,14 @@ inode_t * allocate_inode();
  * @param path      the current path
  * @return the parent path
  */
-const char ** dirname(const char ** path);
+const char **dirname(const char **path);
 
 /**
  * Frees a previously allocated @c dirname
  * 
  * @param path      the @c dirname to deallocate.
  */
-void free_dirname(const char ** path);
+void free_dirname(const char **path);
 
 /**
  * Gets the basename of the current path.
@@ -132,6 +134,6 @@ void basename(const char **path, const char name[]);
  */
 size_t get_free_data_block(size_t min_size, size_t ino);
 
-file_t * get_file_fd(fd_t fd);
+file_t *get_file_fd(fd_t fd);
 
 #endif
