@@ -129,11 +129,20 @@ void free_dirname(const char **path);
 void basename(const char **path, const char name[]);
 
 /**
+ * Gets a data block that does not have an inode associated with it.
+ * 
  * @param min_size      minimum number of blocks to allocate.
+ * @param ino           the inode number that we are finding a data block for.
  * @return free block number
  */
 size_t get_free_data_block(size_t min_size, size_t ino);
 
+/**
+ * Gets a @c file_t from its file descriptor.
+ * 
+ * @param fd        The file descriptor.
+ * @return a pointer to the file associated with @p fd.
+ */
 file_t *get_file_fd(fd_t fd);
 
 #endif
